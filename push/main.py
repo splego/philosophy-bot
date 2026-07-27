@@ -1,13 +1,17 @@
+import json
+import boto3
+
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("users")
+
 def lambda_handler(event, context):
-    print("batch start")
+    response = table.scan()
 
-    # 仮データ
-    users = ["test_user_id"]
+    items = responce.get("Items", [])
 
-    for user in users:
-        print("send to:", user)
+    print("ITEMS:", items)
 
     return {
         "statusCode": 200,
-        "body": "OK"
+        "body": json.dumps(items)
     }
