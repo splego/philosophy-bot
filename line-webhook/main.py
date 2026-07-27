@@ -1,12 +1,24 @@
-def lambda_handler(event, context):
-    print("event:", event)
+import json
+import boto3
+import uuid
 
-    user_id = event["events"][0]["source"]["userId"]
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("users")
+
+def lambda_handler(event, context):
+    print("EVENT:", json.dumps(event))
+
+    # とりあえずダミーデータ
+    user_id = str(uuid.uuid4())
 
     # DB保存（あとで実装）
-    print("user_id:", user_id)
-
+    table.put_item(
+        Item = {
+            "userId": user_id,
+            "test": "GOOD!"
+        }
+    )
     return {
         "statusCode": 200,
-        "body": "OK"
+        "body": json.dumps({"message": "written"})
     }
