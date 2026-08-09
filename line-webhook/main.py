@@ -31,20 +31,20 @@ def lambda_handler(event, context):
 def reply_message(reply_token, text):
     url = "https://api.line.me/v2/bot/message/reply"
 
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}"
-        }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}"
+    }
 
-        data = {
-            "replyToken": reply_token,
-            "messages": [
-                {
-                    "type": "text",
-                    "text": text
-                }
-            ]
-       }
+    data = {
+        "replyToken": reply_token,
+        "messages": [
+            {
+                "type": "text",
+                "text": text
+            }
+        ]
+    }
 
     req = urllib.request.Request(
         url,
