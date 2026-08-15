@@ -2,7 +2,9 @@ import json
 import boto3
 import uuid
 import urllib.request
+import os 
 
+LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("users")
 
@@ -12,16 +14,22 @@ def lambda_handler(event, context):
     events = body.get("events", [])
 
     for e in events:
-        user_id = e["source"]["userId"]
         event_type = e["type"]
 
-        table.put_item(Item={
-        "userId": user_id
-        })
+        if event_type == "follow":
+            user_id = e["source"]["userId"]
 
-        if "replyToken" in e:
+            # DBにID保存
+            table.put_item(
+                Item={
+                    "userId": user_id
+                }
+            )
+
+            # LINEに返信
             reply_token = e["replyToken"]
             reply_message(reply_token, "登録さんきゅ～！")
+
 
     return {
         "statusCode": 200,
