@@ -1,0 +1,155 @@
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        position: relative;
+        margin: 0;
+        background: #f5f4f0;
+        color: #222;
+        font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "Hiragino Kaku Gothic ProN",
+            "Yu Gothic",
+            sans-serif;
+        line-height: 1.9;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: -30%;
+        z-index: -1;
+    
+        background:
+            radial-gradient(
+                circle at 20% 30%,
+                rgba(0, 0, 0, 0.035) 0 8%,
+                transparent 8.5%
+            ),
+            radial-gradient(
+                circle at 75% 70%,
+                transparent 0 12%,
+                rgba(0, 0, 0, 0.025) 12.5% 13%,
+                transparent 13.5%
+            ),
+            linear-gradient(
+                35deg,
+                transparent 45%,
+                rgba(0, 0, 0, 0.018) 45% 55%,
+                transparent 55%
+            );
+    
+            animation: background-drift 24s ease-in-out infinite alternate;
+            pointer-events: none;
+            touch-action: none;
+    }
+    
+
+    @keyframes background-drift {
+        from {
+            transform: translate3d(-5%, -3%, 0) rotate(-5deg) scale(1);
+        }
+    
+        to {
+            transform: translate3d(6%, 4%, 0) rotate(5deg) scale(1.08);
+        }
+    }
+
+    header {
+        padding: 80px 28px 64px;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+    }
+
+    header > * {
+        max-width: 680px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    header > p:first-child {
+        margin-bottom: 20px;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        color: #777;
+    }
+
+    h1 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-family:
+            "Yu Mincho",
+            "Hiragino Mincho ProN",
+            serif;
+        font-size: clamp(38px, 10vw, 64px);
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    header > p:last-child {
+        margin-bottom: 0;
+        font-size: 14px;
+        color: #777;
+    }
+
+    main {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 64px 28px 100px;
+    }
+
+    section {
+        margin-bottom: 72px;
+    }
+
+    h2 {
+        margin: 0 0 24px;
+        font-family:
+            "Yu Mincho",
+            "Hiragino Mincho ProN",
+            serif;
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+
+    section > p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 2;
+    }
+
+    .related-person {
+        padding: 24px 0;
+        border-top: 1px solid #ccc;
+    }
+
+    .related-person:last-child {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .related-person h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .related-person p {
+        margin: 0;
+        font-size: 14px;
+        color: #555;
+        line-height: 1.8;
+    }
+
+    @media (min-width: 768px) {
+        header {
+            padding-top: 110px;
+            padding-bottom: 80px;
+        }
+
+        main {
+            padding-top: 80px;
+        }
+    }

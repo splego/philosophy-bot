@@ -59,6 +59,7 @@ def lambda_handler(event, context):
         - 古代、中世、近代、現代、西洋、東洋などを幅広く候補として考えること
         - 「代表的で説明しやすい人物」を優先するのではなく、候補を広く想定した上で一人を選ぶこと
         - すでに選出済の人物：{published_names}の中からは選ばないでください。
+        - とりあえずテストなんでソクラテスを出力して。
 
         回答は次のJSON形式だけで回答すること。JSON以外の文章は出力禁止。
 
@@ -165,6 +166,21 @@ def lambda_handler(event, context):
     この内容をもとに、哲学に詳しくない人でも読める
     「{title}とはどんな思想家なのか」を紹介する記事を書いてください。
 
+    以下のJSON形式だけで返してください。
+
+    {{
+    "intro": "この人物がどんな思想家なのかを簡潔に紹介",
+    "life": "生涯と時代背景",
+    "thought": "中心的な思想をわかりやすく説明",
+    "influence": "後世への影響や思想史上の位置づけ",
+    "related": [
+        {{
+        "name": "関連する思想家の名前",
+        "relation": "この人物との関係を簡潔に説明"
+        }}
+    ]
+    }}
+
     条件：
     - 日本語で書く
     - 1000〜1500字程度
@@ -174,6 +190,7 @@ def lambda_handler(event, context):
     - Wikipedia本文にない事実を勝手に追加しない
     - 元の文章をそのまま長く引用せず、自分の言葉で要約する
     - HTMLタグは使わない
+    - JSON以外の文章は一切出力しない
 
     Wikipedia本文：
     {article}
@@ -199,17 +216,71 @@ def lambda_handler(event, context):
                     detail_article = content["text"]
                     break
 
+    detail = json.loads(detail_article)
+
+    intro = detail["intro"]
+    life = detail["life"]
+    thought = detail["thought"]
+    influence = detail["influence"]
+    related = detail["related"]
+
     # 記事生成
+
+    related_html = ""
+
+    for person in related:
+        related_html += f"""
+        <div class="related-person">
+        <h3>{person["name"]}</h3>
+        <p>{person["relation"]}</p>
+        </div>
+        """
     html = f"""
     <!DOCTYPE html>
     <html lang="ja">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{title}</title>
+        <link rel="stylesheet" href="/philosophers/assets/style.css">
     </head>
     <body>
-        <h1>{title}</h1>
-        <pre>{detail_article}</pre>
+
+        <header>
+            <p>DAILY PHILOSOPHER</p>
+            <h1>{title}</h1>
+            <p>{birth_death}｜{region}</p>
+        </header>
+
+        <main>
+
+            <section>
+                <h2>{title}とは</h2>
+                <p>{intro}</p>
+            </section>
+
+            <section>
+                <h2>生涯と時代</h2>
+                <p>{life}</p>
+            </section>
+
+            <section>
+                <h2>思想</h2>
+                <p>{thought}</p>
+            </section>
+
+            <section>
+                <h2>後世への影響</h2>
+                <p>{influence}</p>
+            </section>
+
+            <section>
+                <h2>関連する思想家</h2>
+                {related_html}
+            </section>
+
+        </main>
+
     </body>
     </html>
     """
