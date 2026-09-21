@@ -59,7 +59,7 @@ def lambda_handler(event, context):
         - 古代、中世、近代、現代、西洋、東洋などを幅広く候補として考えること
         - 「代表的で説明しやすい人物」を優先するのではなく、候補を広く想定した上で一人を選ぶこと
         - すでに選出済の人物：{published_names}の中からは選ばないでください。
-        - とりあえずテストなんでソクラテスを出力して。
+        - とりあえずテストなんで熊十力を出力して。
 
         回答は次のJSON形式だけで回答すること。JSON以外の文章は出力禁止。
 
@@ -123,7 +123,40 @@ def lambda_handler(event, context):
     {detail_url}
     """
     
-    # Wikipedia記事取得
+    # Wikipediaでまず人物名検索
+    search_params = urllib.parse.urlencode({
+        "action": "opensearch",
+        "search": title,
+        "limit": "10",
+        "namespace": "0",
+        "format": "json"
+    })
+
+    search_url = "https://ja.wikipedia.org/w/api.php?" + search_params
+
+    search_req = urllib.request.Request (
+        search_url,
+        headers = {
+            "User-Agent": "PhilosopherLINEBot/1.0"
+        }
+    )
+
+    with urllib.request.urlopen(search_req) as res:
+        search_data = json.loads(res.read().decode("utf-8"))
+
+    print("Wikipedia検索結果:", search_data)
+
+    if search_data[1]:
+        wiki_title = search_data[1][0]
+        print("Wikipedia確定タイトル:", wiki_title)
+    else:
+        print("Wikipedia記事が見つかりません:", title)
+        return {
+            "statusCode": 200,
+            "body": "Wikipedia記事が見つかりませんでした"
+        }
+
+    # 今までのWikipedia本文取得
     params = urllib.parse.urlencode({
         "action": "query",
         "prop": "extracts",
@@ -134,7 +167,6 @@ def lambda_handler(event, context):
     })
 
     url = "https://ja.wikipedia.org/w/api.php?" + params
-
     req = urllib.request.Request (
         url,
         headers = {
@@ -145,10 +177,7 @@ def lambda_handler(event, context):
     with urllib.request.urlopen(req) as res:
         wiki_data = json.loads(res.read().decode("utf-8"))
 
-    print("今回のtitle:", title)
-    print("Wikipediaレスポンス:", wiki_data)
     article = wiki_data["query"]["pages"][0]["extract"]
-    # print(article[:1000])
 
     # Wikipedia本文から詳細記事を生成
     url = "https://api.openai.com/v1/responses"
