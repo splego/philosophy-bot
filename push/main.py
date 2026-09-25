@@ -340,6 +340,40 @@ def lambda_handler(event, context):
 
     article = wiki_data["query"]["pages"][0]["extract"]
 
+    # 画像検索
+    image_params = urllib.parse.urlencode({
+    "action": "query",
+    "prop": "pageimages",
+    "titles": wiki_title,
+    "pithumbsize": 600,
+    "format": "json",
+    "formatversion": "2"
+    })
+
+    image_url = (
+        f"https://{wiki_lang}.wikipedia.org/w/api.php?"
+        + image_params
+    )
+
+    req = urllib.request.Request(
+        image_url,
+        headers={"User-Agent": "PhilosopherLINEBot/1.0"}
+    )
+
+    with urllib.request.urlopen(req) as res:
+        image_data = json.loads(res.read().decode("utf-8"))
+
+    image = (
+        image_data["query"]["pages"][0]
+        .get("thumbnail", {})
+        .get("source")
+    )
+
+    print("画像URL:", image)
+
+
+
+
     # Wikipedia本文から詳細記事を生成
     url = "https://api.openai.com/v1/responses"
 
@@ -447,7 +481,14 @@ def lambda_handler(event, context):
         <p>{person["relation"]}</p>
         </div>
         """
+
+    portrait_html = (
+        f'<img src="{image}" class="portrait" alt="{title}の肖像">'
+    if image else ""
+    )
+
     html = f"""
+
     <!DOCTYPE html>
     <html lang="ja">
     <head>
@@ -460,8 +501,15 @@ def lambda_handler(event, context):
 
         <header>
             <p>DAILY PHILOSOPHER</p>
-            <h1>{title}</h1>
-            <p>{birth_death}｜{region}</p>
+            <div class="profile-header">
+                <div class="profile-info">
+                    <h1>{title}</h1>
+                    <p>{birth_death}｜{region}</p>
+                </div>
+
+            {portrait_html}
+
+            </div>
         </header>
 
         <main>

@@ -143,6 +143,30 @@
         line-height: 1.8;
     }
 
+    .profile-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        width: 100%;
+    }
+    
+    .profile-info {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .profile-header .portrait {
+        display: block;
+        width: 120px;
+        height: 120px;
+        flex: 0 0 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin: 0;
+    }
+
     @media (min-width: 768px) {
         header {
             padding-top: 110px;
