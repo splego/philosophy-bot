@@ -431,12 +431,15 @@ def lambda_handler(event, context):
     - Wikipedia本文にない歴史的事実を追加しない。
     - 元の文章を長く引用せず、自分の言葉で表現する。
     - 日本語で1000〜1500字程度。
-    - HTMLタグは使わない。
     - 指定されたJSON形式だけで回答する。
     - 原文が日本語以外の場合も、内容を理解して自然な日本語の記事を作成すること。
     - Wikipedia本文と英語版Wikipedia本文が同じ場合は、同一資料として扱うこと。
     - Wikipediaなどの資料を参照していることを読者に意識させない。
     - 「本文によると」「資料では」「Wikipediaには」「提供された情報からは」などのメタ的な表現を使わない。
+    - 日本語の記事では、難読漢字を含む人名・地名・哲学用語の初出時に限り、HTMLのrubyタグでひらがなの読みを付けてください。
+    例：
+    <ruby>形而上学<rt>けいじじょうがく</rt></ruby>
+    読み方が不確かな場合はルビを付けないでください。
 
     Wikipedia本文(取得言語：{wiki_lang}):{article}
     英語版Wikipedia本文（参考資料）：{en_article}
@@ -504,6 +507,7 @@ def lambda_handler(event, context):
             <div class="profile-header">
                 <div class="profile-info">
                     <h1>{title}</h1>
+                    <p class="name-en">{name_en}</p>
                     <p>{birth_death}｜{region}</p>
                 </div>
 
@@ -569,7 +573,7 @@ def lambda_handler(event, context):
     # LINEへPUSH
     for item in items:
 
-        user_id = items[0]["userId"]
+        user_id = item["userId"]
         print("ゆーざあいでぃ", user_id)
 
         url = "https://api.line.me/v2/bot/message/push"

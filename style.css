@@ -88,6 +88,13 @@
         line-height: 1.25;
     }
 
+    .name-en {
+        margin: -8px 0 16px;
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        color: #777;
+    }
+
     header > p:last-child {
         margin-bottom: 0;
         font-size: 14px;
