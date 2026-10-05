@@ -1,9 +1,11 @@
 import json
 import boto3
 import urllib.request
+import urllib.error
 import urllib.parse
 import os
 import random
+from datetime import datetime, timezone, timedelta
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("users")
@@ -67,10 +69,28 @@ def lambda_handler(event, context):
             "name_en": "英語Wikipediaで使われる一般的な英語表記",
             "wikipedia_title": "日本語Wikipediaで検索するための一般的なページ名",
             "slug": "人物名を英字小文字とハイフンだけで表したURL用の名前",
+
             "birth_death": "生没年",
+            "birth_year": 生年,
+            "death_year": 没年,
+            "birth_year_approx": trueまたはfalse,
+            "death_year_approx": trueまたはfalse,
+
             "region": "地域",
+            "era": "時代",
+
             "summary": "中心的な思想を100〜150字程度で説明",
-            "question": "その思想について考えるための短い問い"
+            "question": "その思想について考えるための短い問い",
+
+            "ideas": [
+                "思想・概念1",
+                "思想・概念2",
+                "思想・概念3"
+            ],
+
+            "schools": [
+                "学派・思想的伝統"
+            ]
         }}
         """
     }
@@ -100,10 +120,22 @@ def lambda_handler(event, context):
     name_en = result["name_en"]
     wiki_title = result["wikipedia_title"]
     slug = result["slug"]
+
+    # 旧生没年変数
     birth_death = result["birth_death"]
+    birth_year = result["birth_year"]
+    death_year = result["death_year"]
+    birth_year_approx = result["birth_year_approx"]
+    death_year_approx = result["death_year_approx"]
+
     region = result["region"]
+    era = result["era"]
+
     summary = result["summary"]
     question = result["question"]
+
+    ideas = result["ideas"]
+    schools = result["schools"]
 
     file_key = f"philosophers/{slug}.html"
     detail_url = f"https://dk0brv3hfi7uc.cloudfront.net/{file_key}"
@@ -559,10 +591,29 @@ def lambda_handler(event, context):
     # print(detail_article)
 
     # 取得した哲学者をDBに登録
+    jst = timezone(timedelta(hours=9))
+    published_at = datetime.now(jst).strftime("%Y-%m-%d")
+
     philosophers_table.put_item (
         Item = {
             "name": title,
-            "publishedAt": "2026-09-18",
+            "name_en": name_en,
+            "slug": slug,
+
+            "birth_death": birth_death,
+            "birth_year": birth_year,
+            "death_year": death_year,
+            "birth_year_approx": birth_year_approx,
+            "death_year_approx": death_year_approx,
+
+            "region": region,
+            "era": era,
+
+            "summary": summary,
+            "ideas": ideas,
+            "schools": schools,
+            
+            "publishedAt": published_at,
             "articleUrl": detail_url
         }
     )
@@ -595,9 +646,14 @@ def lambda_handler(event, context):
             method="POST"
         )
 
-        with urllib.request.urlopen(req) as res:
-            print("LINE STATUS:", res.status)
-            print("OPENAI:", message)
+        try:
+            with urllib.request.urlopen(req) as res:
+                print("LINE STATUS:", res.status)
+
+        except urllib.error.HTTPError as e:
+            print("LINE ERROR STATUS:", e.code)
+            print("LINE ERROR BODY:", e.read().decode("utf-8"))
+            raise
 
     return {
         "statusCode": 200,
