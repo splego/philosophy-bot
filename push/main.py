@@ -6,6 +6,7 @@ import urllib.parse
 import os
 import random
 from datetime import datetime, timezone, timedelta
+from decimal import Decimal
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("users")
@@ -16,7 +17,103 @@ s3 = boto3.client("s3")
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 
+def normalize_json_value(value):
+    # DynamoDBのDecimalをJSONで使える数値に変換する
+    if isinstance(value, Decimal):
+        return int(value) if value % 1 == 0 else float(value)
+
+    if isinstance(value, dict):
+        return {
+            key: normalize_json_value(val)
+            for key, val in value.items()
+        }
+
+    if isinstance(value, list):
+        return [normalize_json_value(item) for item in value]
+
+    return value
+
+
+def refresh_philosopher_catalog():
+    # 哲学者一覧をJSONにしてS3へ保存する
+
+    items = []
+    scan_kwargs = {}
+
+    # 全ページを取得する
+    while True:
+        response = philosophers_table.scan(**scan_kwargs)
+        items.extend(response.get("Items", []))
+
+        last_key = response.get("LastEvaluatedKey")
+        if not last_key:
+            break
+
+        scan_kwargs["ExclusiveStartKey"] = last_key
+
+    # 探索ページで使用する属性だけを公開する
+    public_fields = [
+        "name",
+        "name_en",
+        "slug",
+        "birth_death",
+        "birth_year",
+        "death_year",
+        "birth_year_approx",
+        "death_year_approx",
+        "region",
+        "era",
+        "summary",
+        "question",
+        "ideas",
+        "schools",
+        "birth_place",
+        "death_place",
+        "locations",
+        "articleUrl",
+        "publishedAt",
+    ]
+
+    philosophers = [
+        normalize_json_value({
+            key: item[key]
+            for key in public_fields
+            if key in item
+        })
+        for item in items
+    ]
+
+    data = {
+        "updatedAt": datetime.now(timezone.utc).isoformat(),
+        "philosophers": philosophers,
+    }
+
+    s3.put_object(
+        Bucket="philosopher-pages-2026",
+        Key="philosophers/philosophers.json",
+        Body=json.dumps(
+            data,
+            ensure_ascii=False
+        ).encode("utf-8"),
+        ContentType="application/json; charset=utf-8",
+        CacheControl="no-cache",
+    )
+
+    print(
+        "哲学者一覧JSONを更新:",
+        len(philosophers),
+        "件"
+    )
+
+
 def lambda_handler(event, context):
+
+    if isinstance(event, dict) and event.get("action") == "refresh_catalog":
+        refresh_philosopher_catalog()
+        return {
+            "statusCode": 200,
+            "body": "Catalog refreshed"
+        }
 
     response = philosophers_table.scan()
     published_items = response.get("Items", [])
@@ -99,21 +196,21 @@ def lambda_handler(event, context):
                 "学派・思想的伝統"
             ],
 
-            "birth_place": {
-            "name": "出生地",
-            "country": "国"
-            },
+            "birth_place": {{
+                "name": "出生地",
+                "country": "国"
+            }},
 
-            "death_place": {
+            "death_place": {{
                 "name": "死没地",
                 "country": "国"
-            },
+            }},
 
             "locations": [
-                {
+                {{
                     "name": "活動地",
                     "country": "国"
-                }
+                }}
             ]
             
         }}
@@ -650,6 +747,11 @@ def lambda_handler(event, context):
             "articleUrl": detail_url
         }
     )
+
+    try:
+        refresh_philosopher_catalog()
+    except Exception as e:
+        print("哲学者一覧JSONの更新に失敗:", repr(e))
 
     response = table.scan()
     items = response.get("Items", [])

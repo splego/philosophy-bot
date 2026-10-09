@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Philosophers — Daily Philosophy</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f4f0;
+      --paper: rgba(255, 255, 255, .82);
+      --line: #dcd9d3;
+      --line-dark: #c9c5bd;
+      --text: #292727;
+      --muted: #777b80;
+      --accent: #8797a3;
+      --accent-dark: #667c8a;
+      --accent-pale: rgba(135, 151, 163, .13);
+      --danger: #98685d;
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      position: relative;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.75;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -30%;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(0,0,0,.035) 0 8%, transparent 8.5%),
+        radial-gradient(circle at 75% 70%, transparent 0 12%, rgba(0,0,0,.025) 12.5% 13%, transparent 13.5%),
+        linear-gradient(35deg, transparent 45%, rgba(0,0,0,.018) 45% 55%, transparent 55%);
+      animation: background-drift 24s ease-in-out infinite alternate;
+      pointer-events: none;
+      touch-action: none;
+    }
+    @keyframes background-drift {
+      from { transform: translate3d(-5%, -3%, 0) rotate(-5deg) scale(1); }
+      to { transform: translate3d(6%, 4%, 0) rotate(5deg) scale(1.08); }
+    }
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    [hidden] { display: none !important; }
+    .shell { width: min(1600px, calc(100% - 40px)); margin: 0 auto; }
+
+    header {
+      padding: 10px 0 9px;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid #dedbd6;
+    }
+    header .shell { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+    .eyebrow { color:#87919a; font-size:10px; letter-spacing:.22em; text-transform:uppercase; }
+    .header-meta { color:var(--muted); font-size:10px; letter-spacing:.09em; white-space:nowrap; }
+
+    main { padding: 7px 0 24px; }
+    .modebar {
+      display:flex; gap:12px; margin-bottom:10px; overflow-x:auto;
+      border-bottom:1px solid var(--line);
+    }
+    .mode {
+      min-width:86px; padding:8px 8px 7px; color:var(--muted); background:transparent;
+      border:0; border-bottom:2px solid transparent; font-size:10px; font-weight:500;
+      letter-spacing:.16em; white-space:nowrap;
+    }
+    .mode[aria-selected="true"] { color:var(--accent-dark); border-bottom-color:var(--accent); }
+    .toolbar {
+      display:grid; grid-template-columns:minmax(220px, 1fr) minmax(150px, 220px) auto;
+      gap:8px; margin-bottom:9px;
+    }
+    .control {
+      width:100%; min-height:39px; padding:0 12px; color:var(--text);
+      background:rgba(255,255,255,.82); border:1px solid #d9d6d0; border-radius:2px; outline:none;
+    }
+    .control::placeholder { color:#96979a; }
+    .control:focus { border-color:#8495a1; box-shadow:0 0 0 2px rgba(135,151,163,.13); }
+    .result-count { align-self:center; padding:0 4px; color:var(--muted); font-size:11px; white-space:nowrap; }
+
+    .timeline-switch-wrap {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin:7px 0 10px;
+    }
+    .timeline-switch { display:inline-flex; padding:3px; gap:2px; background:rgba(255,255,255,.55); border:1px solid var(--line); }
+    .timeline-switch button {
+      min-height:31px; padding:4px 13px; border:0; background:transparent; color:var(--muted);
+      font-size:11px; letter-spacing:.025em; border-radius:1px;
+    }
+    .timeline-switch button[aria-pressed="true"] { color:#34444d; background:#e7ebed; box-shadow:inset 0 0 0 1px #d4dce0; }
+    .view-hint { color:var(--muted); font-size:10px; text-align:right; }
+
+    .timeline-panel { background:rgba(255,255,255,.56); border-top:1px solid var(--line-dark); border-bottom:1px solid var(--line-dark); }
+    .person-axis { padding:9px 0 5px; color:var(--muted); border-bottom:1px solid var(--line); }
+    .person-axis-labels { display:flex; justify-content:space-between; gap:8px; font-size:9px; }
+    .person-card { display:block; padding:10px 0 11px; text-decoration:none; border-bottom:1px solid #e5e2dd; transition:background .14s ease; }
+    .person-card:last-child { border-bottom:0; }
+    .person-card:hover { background:rgba(255,255,255,.64); }
+    .person-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+    .person-name { min-width:0; overflow-wrap:anywhere; color:#292727; font-family:"Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif; font-size:16px; letter-spacing:.015em; line-height:1.5; }
+    .person-years { flex:0 0 auto; color:#777b80; font-size:10px; white-space:nowrap; }
+    .person-meta { display:flex; flex-wrap:wrap; gap:3px 10px; margin-top:1px; color:#828287; font-size:10px; }
+    .mini-track { position:relative; height:12px; margin-top:7px; background:linear-gradient(to bottom, transparent 5px, #d9d7d1 5px, #d9d7d1 6px, transparent 6px); }
+    .mini-tick { position:absolute; top:1px; bottom:0; width:1px; background:#e2dfd9; }
+    .mini-life { position:absolute; top:3px; height:6px; min-width:4px; background:var(--accent); border-radius:1px; box-shadow:0 0 0 2px rgba(135,151,163,.1); }
+    .mini-life::before, .mini-life::after { position:absolute; top:0; width:6px; height:6px; background:var(--accent-dark); border-radius:50%; content:""; }
+    .mini-life::before { left:0; } .mini-life::after { right:0; }
+    .no-year { display:inline-block; margin-top:6px; color:var(--muted); font-size:10px; }
+
+    /* Vertical timeline centered on the page; period cards alternate left and right. */
+    .roadmap { position:relative; padding:8px 0 16px; }
+    .roadmap::before { content:""; position:absolute; top:42px; bottom:22px; left:50%; width:1px; background:#c9c7c1; transform:translateX(-.5px); }
+    .roadmap-entry { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr); grid-template-rows:auto auto; gap:0; padding:5px 0 17px; }
+    .roadmap-period { grid-column:1 / -1; padding:2px 0 9px; color:#6f7276; font-size:10px; line-height:1.55; text-align:center; letter-spacing:.04em; }
+    .roadmap-axis-cell { grid-column:2; grid-row:2; display:flex; justify-content:center; position:relative; z-index:1; }
+    .roadmap-dot { width:9px; height:9px; margin-top:13px; background:var(--accent); border:2px solid #f5f4f0; border-radius:50%; box-shadow:0 0 0 1px #9ba8ae; }
+    .roadmap-side { grid-row:2; min-width:0; position:relative; }
+    .roadmap-left { grid-column:1; }
+    .roadmap-right { grid-column:3; }
+    .roadmap-left .roadmap-card { margin-right:17px; }
+    .roadmap-right .roadmap-card { margin-left:17px; }
+    .roadmap-card { position:relative; min-width:0; padding:10px 11px; background:rgba(255,255,255,.68); border:1px solid #dedbd5; }
+    .roadmap-left .roadmap-card::before, .roadmap-right .roadmap-card::before { content:""; position:absolute; top:17px; width:17px; border-top:1px solid #c9c7c1; }
+    .roadmap-left .roadmap-card::before { right:-18px; }
+    .roadmap-right .roadmap-card::before { left:-18px; }
+    .period-summary { display:flex; align-items:center; justify-content:space-between; gap:7px; }
+    .period-title { color:#333133; font-family:"Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif; font-size:14px; line-height:1.5; }
+    .period-count { flex:0 0 auto; color:var(--muted); font-size:10px; }
+    .period-preview { display:flex; flex-direction:column; gap:4px; margin-top:5px; color:#6d7074; font-size:11px; overflow-wrap:anywhere; }
+    .period-preview a { text-decoration:none; }
+    .period-preview a:hover { color:var(--accent-dark); text-decoration:underline; }
+    .cluster-toggle { display:flex; align-items:center; justify-content:space-between; gap:6px; width:100%; margin-top:9px; padding:7px 0 0; color:var(--accent-dark); background:transparent; border:0; border-top:1px solid #e2dfda; font-size:10px; text-align:left; }
+    .cluster-toggle::after { content:"＋"; flex:0 0 auto; font-size:15px; }
+    .cluster-toggle[aria-expanded="true"]::after { content:"−"; }
+    .cluster-list { margin-top:8px; border-top:1px solid #e2dfda; }
+    .cluster-person { display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:7px 0; text-decoration:none; border-bottom:1px solid #e9e6e1; }
+    .cluster-person:last-child { border-bottom:0; }
+    .cluster-person:hover .cluster-name { color:var(--accent-dark); text-decoration:underline; }
+    .cluster-name { min-width:0; font-family:"Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif; font-size:12px; overflow-wrap:anywhere; }
+    .cluster-meta { color:var(--muted); font-size:9px; line-height:1.5; }
+    .unknown-note { color:var(--muted); font-size:10px; }
+
+    .empty { padding:36px 18px; color:var(--muted); text-align:center; font-size:12px; }
+    .empty strong { display:block; margin-bottom:4px; color:var(--text); font-family:"Yu Mincho", "Hiragino Mincho ProN", serif; font-size:19px; font-weight:500; }
+    .status { margin-top:7px; color:#828287; font-size:10px; line-height:1.7; }
+    .status.error { color:var(--danger); }
+    .footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; padding:12px 0 18px; color:#828287; border-top:1px solid #d8d5cf; font-size:9px; letter-spacing:.08em; }
+
+    @media (min-width: 900px) {
+      .timeline-panel { padding-inline:18px; }
+      .roadmap { max-width:1240px; margin:0 auto; }
+      .roadmap-entry { grid-template-columns:minmax(0,1fr) 42px minmax(0,1fr); }
+      .roadmap-card { padding:12px 14px; }
+      .person-card { padding-inline:2px; }
+    }
+    @media (max-width: 700px) {
+      .shell { width:calc(100% - 20px); }
+      header { padding:8px 0; }
+      .eyebrow { font-size:9px; }
+      .header-meta { font-size:9px; }
+      main { padding-top:5px; }
+      .modebar { gap:7px; margin-bottom:8px; }
+      .mode { min-width:0; padding:8px 10px 7px; }
+      .toolbar { grid-template-columns:minmax(0,1fr) auto; gap:7px; margin-bottom:7px; }
+      #search { grid-column:1 / -1; }
+      .control { min-height:38px; padding-inline:10px; font-size:12px; }
+      .timeline-switch-wrap { align-items:flex-start; flex-direction:column; gap:5px; margin-top:7px; }
+      .view-hint { text-align:left; }
+      .timeline-switch { width:100%; }
+      .timeline-switch button { flex:1; padding-inline:8px; }
+      .person-card { padding:9px 0 10px; }
+      .person-name { font-size:14px; }
+      .person-years { font-size:9px; }
+      .person-meta { font-size:9px; }
+      .person-axis-labels { font-size:8px; }
+      .roadmap::before { top:40px; bottom:19px; }
+      .roadmap-entry { grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr); padding-bottom:12px; }
+      .roadmap-period { padding-bottom:7px; font-size:9px; }
+      .roadmap-left .roadmap-card { margin-right:9px; }
+      .roadmap-right .roadmap-card { margin-left:9px; }
+      .roadmap-left .roadmap-card::before, .roadmap-right .roadmap-card::before { width:9px; }
+      .roadmap-left .roadmap-card::before { right:-10px; }
+      .roadmap-right .roadmap-card::before { left:-10px; }
+      .roadmap-card { padding:7px 7px; }
+      .roadmap-dot { width:8px; height:8px; margin-top:13px; }
+      .period-title { font-size:12px; }
+      .period-count { font-size:9px; }
+      .period-preview { gap:4px; font-size:10px; }
+      .cluster-toggle { font-size:9px; gap:3px; }
+      .cluster-name { font-size:11px; }
+      .cluster-meta { font-size:8px; }
+      .unknown-note { font-size:9px; }
+      .footer { gap:4px 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      body::before { animation:none; }
+      * { transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <span class="eyebrow">Daily Philosopher</span>
+      <span class="header-meta" id="dataset-label">DATASET LOADING</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <nav class="modebar" aria-label="探索モード">
+      <button class="mode" type="button" data-mode="time" aria-selected="true">TIME</button>
+      <button class="mode" type="button" data-mode="map" aria-selected="false">MAP</button>
+      <button class="mode" type="button" data-mode="network" aria-selected="false">NETWORK</button>
+    </nav>
+
+    <section id="time-view">
+      <div class="toolbar">
+        <input id="search" class="control" type="search" placeholder="哲学者・思想・地域を検索" aria-label="哲学者を検索">
+        <select id="era-filter" class="control" aria-label="時代で絞り込む"><option value="">すべての時代</option></select>
+        <div class="result-count" id="result-count" aria-live="polite">読み込み中…</div>
+      </div>
+
+      <div class="timeline-switch-wrap">
+        <div class="timeline-switch" role="group" aria-label="タイムラインの表示方法">
+          <button type="button" data-timeline-style="person" aria-pressed="true">人物を主軸</button>
+          <button type="button" data-timeline-style="time" aria-pressed="false">時間を主軸</button>
+        </div>
+        <div class="view-hint" id="view-hint">人物ごとの生涯を一覧で比較</div>
+      </div>
+
+      <div id="person-view" class="timeline-panel">
+        <div id="person-axis" class="person-axis"></div>
+        <div id="person-list"><div class="empty"><strong>哲学者データを読み込んでいます</strong>公開用JSONを取得しています。</div></div>
+      </div>
+      <div id="roadmap-view" class="timeline-panel" hidden>
+        <div id="roadmap" class="roadmap"></div>
+      </div>
+      <p class="status" id="data-status">接続先：同じフォルダーの <code>philosophers.json</code></p>
+    </section>
+
+    <section id="placeholder-view" hidden>
+      <div class="timeline-panel">
+        <div class="empty"><strong id="placeholder-title">Coming soon</strong><span id="placeholder-copy">このモードは今後実装予定です。</span><br><button class="control" id="back-to-time" type="button" style="width:auto;margin-top:14px">TIMEに戻る</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <span>DAILY PHILOSOPHY</span>
+    <span>Explore ideas across time and place.</span>
+  </footer>
+
+  <script>
+    const DEMO_PHILOSOPHERS = [
+      { name: "タレス", name_en: "Thales of Miletus", slug: "thales", birth_year: -624, death_year: -546, birth_year_approx: true, death_year_approx: true, birth_death: "紀元前624年頃–紀元前546年頃", era: "古代", region: "ギリシャ", ideas: ["アルケー", "自然哲学"], schools: ["ミレトス学派"] },
+      { name: "孔子", name_en: "Confucius", slug: "confucius", birth_year: -551, death_year: -479, birth_year_approx: true, death_year_approx: true, birth_death: "紀元前551年頃–紀元前479年頃", era: "古代", region: "中国", ideas: ["仁", "礼", "徳治"], schools: ["儒家"] },
+      { name: "ソクラテス", name_en: "Socrates", slug: "socrates", birth_year: -470, death_year: -399, birth_year_approx: true, death_year_approx: false, birth_death: "紀元前470年頃–紀元前399年", era: "古代", region: "ギリシャ", ideas: ["問答法", "無知の知", "徳"], schools: ["古代ギリシャ哲学"] },
+      { name: "プラトン", name_en: "Plato", slug: "plato", birth_year: -428, death_year: -348, birth_year_approx: true, death_year_approx: true, birth_death: "紀元前428年頃–紀元前348年頃", era: "古代", region: "ギリシャ", ideas: ["イデア", "魂", "哲人政治"], schools: ["プラトン学派"] },
+      { name: "アリストテレス", name_en: "Aristotle", slug: "aristotle", birth_year: -384, death_year: -322, birth_year_approx: false, death_year_approx: false, birth_death: "紀元前384年–紀元前322年", era: "古代", region: "ギリシャ", ideas: ["四原因説", "徳倫理", "形相と質料"], schools: ["逍遙学派"] },
+      { name: "ナーガールジュナ（龍樹）", name_en: "Nāgārjuna", slug: "nagarjuna", birth_year: 150, death_year: 250, birth_year_approx: true, death_year_approx: true, birth_death: "2世紀頃–3世紀頃", era: "古代", region: "インド", ideas: ["空", "中道"], schools: ["中観派"] },
+      { name: "アウグスティヌス", name_en: "Augustine of Hippo", slug: "augustine", birth_year: 354, death_year: 430, birth_death: "354–430年", era: "古代", region: "北アフリカ", ideas: ["時間", "悪の問題"], schools: ["キリスト教哲学"] },
+      { name: "バールーフ・デ・スピノザ", name_en: "Baruch Spinoza", slug: "spinoza", birth_year: 1632, death_year: 1677, birth_year_approx: false, death_year_approx: false, birth_death: "1632–1677", era: "近世", region: "オランダ", ideas: ["実体", "神即自然", "決定論"], schools: ["合理主義"] },
+      { name: "イマヌエル・カント", name_en: "Immanuel Kant", slug: "kant", birth_year: 1724, death_year: 1804, birth_year_approx: false, death_year_approx: false, birth_death: "1724–1804", era: "近代", region: "プロイセン", ideas: ["認識論", "定言命法", "自由"], schools: ["ドイツ観念論の先駆"] },
+      { name: "シモーヌ・ド・ボーヴォワール", name_en: "Simone de Beauvoir", slug: "simone-de-beauvoir", birth_year: 1908, death_year: 1986, birth_year_approx: false, death_year_approx: false, birth_death: "1908–1986", era: "現代", region: "フランス", ideas: ["実存", "自由", "ジェンダー"], schools: ["実存主義"] }
+    ];
+
+    const $ = (selector) => document.querySelector(selector);
+    const searchInput = $("#search");
+    const eraFilter = $("#era-filter");
+    const personList = $("#person-list");
+    const personAxis = $("#person-axis");
+    const roadmap = $("#roadmap");
+    const status = $("#data-status");
+    const count = $("#result-count");
+    let allPhilosophers = [];
+    let timelineStyle = "person";
+    let axisMin = -700;
+    let axisMax = 2100;
+
+    function safeText(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+    function getYear(person, key) {
+      const value = person?.[key];
+      return value == null || value === "" || !Number.isFinite(Number(value)) ? null : Number(value);
+    }
+    function formatYear(year) {
+      if (year == null || !Number.isFinite(Number(year))) return "年代不明";
+      const n = Math.round(Number(year));
+      if (n < 0) return `紀元前${Math.abs(n)}年`;
+      if (n === 0) return "紀元前後";
+      return `西暦${n}年`;
+    }
+    function lifespanText(person) {
+      if (person.birth_death) return person.birth_death;
+      const birth = getYear(person, "birth_year");
+      const death = getYear(person, "death_year");
+      if (birth === null && death === null) return "生没年不明";
+      return `${birth === null ? "年代不明" : formatYear(birth)} – ${death === null ? "没年不明" : formatYear(death)}`;
+    }
+    function validArticleUrl(person) {
+      return typeof person.articleUrl === "string" && /^https:\/\//.test(person.articleUrl) ? person.articleUrl : "";
+    }
+    function searchableText(person) {
+      const places = [person.birth_place, person.death_place, ...(Array.isArray(person.locations) ? person.locations : [])]
+        .flatMap((place) => place && typeof place === "object" ? [place.name, place.country] : []);
+      return [person.name, person.name_en, person.region, person.era, ...places, ...(person.ideas || []), ...(person.schools || [])]
+        .filter(Boolean).join(" ").toLocaleLowerCase();
+    }
+    function getFilteredPeople() {
+      const query = searchInput.value.trim().toLocaleLowerCase();
+      const era = eraFilter.value;
+      return allPhilosophers.filter((person) => {
+        if (era && person.era !== era) return false;
+        return !query || searchableText(person).includes(query);
+      }).sort((a, b) => {
+        const ay = getYear(a, "birth_year");
+        const by = getYear(b, "birth_year");
+        if (ay === null && by === null) return String(a.name || "").localeCompare(String(b.name || ""), "ja");
+        if (ay === null) return 1;
+        if (by === null) return -1;
+        return ay - by;
+      });
+    }
+    function calculateAxis(people) {
+      const years = people.flatMap((person) => [getYear(person, "birth_year"), getYear(person, "death_year")]).filter((year) => year !== null);
+      if (!years.length) { axisMin = -700; axisMax = 2100; return; }
+      axisMin = Math.floor(Math.min(...years) / 100) * 100 - 100;
+      axisMax = Math.ceil(Math.max(...years) / 100) * 100 + 100;
+      if (axisMax <= axisMin) axisMax = axisMin + 1000;
+    }
+    function fillEraFilter(people) {
+      const prior = eraFilter.value;
+      const eras = [...new Set(people.map((person) => person.era).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ja"));
+      eraFilter.innerHTML = '<option value="">すべての時代</option>' + eras.map((era) => `<option value="${safeText(era)}">${safeText(era)}</option>`).join("");
+      if (eras.includes(prior)) eraFilter.value = prior;
+    }
+    function renderPersonView(people) {
+      if (!people.length) {
+        personAxis.innerHTML = "";
+        personList.innerHTML = '<div class="empty"><strong>該当する哲学者がいません</strong>検索語や時代フィルターを変えてみてください。</div>';
+        return;
+      }
+      const span = axisMax - axisMin;
+      const marks = [0, .25, .5, .75, 1].map((ratio) => {
+        const year = axisMin + span * ratio;
+        return `<span>${safeText(formatCompactYear(year))}</span>`;
+      }).join("");
+      personAxis.innerHTML = `<div class="person-axis-labels">${marks}</div>`;
+      personList.innerHTML = people.map((person) => {
+        const birth = getYear(person, "birth_year");
+        const death = getYear(person, "death_year");
+        let bar = '<span class="no-year">生没年データなし</span>';
+        if (birth !== null && death !== null && death >= birth) {
+          const left = Math.max(0, Math.min(100, ((birth - axisMin) / span) * 100));
+          const width = Math.max(.45, Math.min(100 - left, ((death - birth) / span) * 100));
+          bar = `<div class="mini-track" aria-hidden="true">${[0,.25,.5,.75,1].map((ratio) => `<span class="mini-tick" style="left:${ratio*100}%"></span>`).join("")}<span class="mini-life" style="left:${left}%;width:${width}%"></span></div>`;
+        }
+        const metadata = [person.era, person.region].filter(Boolean).join(" · ");
+        const href = validArticleUrl(person);
+        const open = href ? `<a class="person-card" href="${safeText(href)}" target="_blank" rel="noopener noreferrer">` : '<div class="person-card">';
+        const close = href ? '</a>' : '</div>';
+        return `${open}<div class="person-head"><span class="person-name">${safeText(person.name || "名称不明")}</span><span class="person-years">${safeText(lifespanText(person))}</span></div><div class="person-meta">${safeText(metadata || person.name_en || "")}</div>${bar}${close}`;
+      }).join("");
+    }
+    function formatCompactYear(year) {
+      const rounded = Math.round(year / 100) * 100;
+      if (rounded < 0) return `紀元前${Math.abs(rounded)}`;
+      if (rounded === 0) return "紀元前後";
+      return `${rounded}年`;
+    }
+    function getPeriodBucket(year) {
+      const start = Math.floor(year / 100) * 100;
+      const end = start + 99;
+      let label;
+      if (start < 0 && end < 0) label = `紀元前${Math.abs(start)}〜${Math.abs(end)}年`;
+      else if (start === 0) label = "西暦1〜99年";
+      else label = `西暦${start}〜${end}年`;
+      return { key: String(start), start, end, label };
+    }
+    function renderRoadmap(people) {
+      if (!people.length) {
+        roadmap.innerHTML = '<div class="empty"><strong>該当する哲学者がいません</strong>検索語や時代フィルターを変えてみてください。</div>';
+        return;
+      }
+      const buckets = new Map();
+      const unknown = [];
+      people.forEach((person) => {
+        const birth = getYear(person, "birth_year");
+        if (birth === null) { unknown.push(person); return; }
+        const bucket = getPeriodBucket(birth);
+        if (!buckets.has(bucket.key)) buckets.set(bucket.key, { ...bucket, people: [] });
+        buckets.get(bucket.key).people.push(person);
+      });
+      const groups = [...buckets.values()].sort((a, b) => a.start - b.start);
+      if (unknown.length) groups.push({ key:"unknown", start:Infinity, label:"年代不明", people:unknown });
+      roadmap.innerHTML = groups.map((group, index) => {
+        const list = group.people.slice().sort((a,b) => {
+          const ay = getYear(a,"birth_year"); const by = getYear(b,"birth_year");
+          if (ay === null && by === null) return String(a.name || "").localeCompare(String(b.name || ""),"ja");
+          if (ay === null) return 1; if (by === null) return -1; return ay - by;
+        });
+        const markerTitle = group.label;
+        const preview = list.slice(0, Math.min(2, list.length)).map((person) => {
+          const href = validArticleUrl(person);
+          const name = safeText(person.name || "名称不明");
+          return href ? `<a href="${safeText(href)}" target="_blank" rel="noopener noreferrer">${name}</a>` : `<span>${name}</span>`;
+        }).join("");
+        const groupKey = `cluster-${index}`;
+        const allPeople = list.map((person) => {
+          const href = validArticleUrl(person);
+          const name = safeText(person.name || "名称不明");
+          const birth = getYear(person,"birth_year");
+          const meta = [lifespanText(person), person.region].filter(Boolean).join(" · ");
+          const label = `<span class="cluster-name">${name}</span><span class="cluster-meta">${safeText(meta)}</span>`;
+          return href ? `<a class="cluster-person" href="${safeText(href)}" target="_blank" rel="noopener noreferrer">${label}</a>` : `<div class="cluster-person">${label}</div>`;
+        }).join("");
+        const body = list.length > 1
+          ? `<div class="period-summary"><span class="period-title">同時期の哲学者</span><span class="period-count">${list.length}人</span></div><div class="period-preview">${preview}</div><button class="cluster-toggle" type="button" aria-expanded="false" aria-controls="${groupKey}">全${list.length}人を表示</button><div class="cluster-list" id="${groupKey}" hidden>${allPeople}</div>`
+          : `<div class="period-summary"><span class="period-title">${preview}</span></div>${list[0] ? `<div class="unknown-note">${safeText(lifespanText(list[0]))}${list[0].region ? ` · ${safeText(list[0].region)}` : ""}</div>` : ""}`;
+        const side = index % 2 === 0 ? "right" : "left";
+        const leftContent = side === "left" ? `<div class="roadmap-card">${body}</div>` : "";
+        const rightContent = side === "right" ? `<div class="roadmap-card">${body}</div>` : "";
+        return `<article class="roadmap-entry"><div class="roadmap-period">${safeText(group.label)}</div><div class="roadmap-side roadmap-left">${leftContent}</div><div class="roadmap-axis-cell"><span class="roadmap-dot" aria-hidden="true"></span></div><div class="roadmap-side roadmap-right">${rightContent}</div></article>`;
+      }).join("");
+      roadmap.querySelectorAll(".cluster-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+          const expanded = button.getAttribute("aria-expanded") === "true";
+          button.setAttribute("aria-expanded", String(!expanded));
+          const list = document.getElementById(button.getAttribute("aria-controls"));
+          list.hidden = expanded;
+          button.firstChild.textContent = expanded ? "この時期の哲学者を全員表示" : "一覧を閉じる";
+        });
+      });
+    }
+    function renderTimeline() {
+      const people = getFilteredPeople();
+      count.textContent = `${people.length} / ${allPhilosophers.length} 人`;
+      calculateAxis(allPhilosophers);
+      renderPersonView(people);
+      renderRoadmap(people);
+    }
+    function setTimelineStyle(style) {
+      timelineStyle = style;
+      document.querySelectorAll("[data-timeline-style]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.timelineStyle === style)));
+      $("#person-view").hidden = style !== "person";
+      $("#roadmap-view").hidden = style !== "time";
+      $("#view-hint").textContent = style === "person" ? "人物ごとの生涯を一覧で比較" : "時間の流れに沿って、時代ごとの人物を展開";
+    }
+    function setMode(mode) {
+      document.querySelectorAll(".mode").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.mode === mode)));
+      const timeMode = mode === "time";
+      $("#time-view").hidden = !timeMode;
+      $("#placeholder-view").hidden = timeMode;
+      if (!timeMode) {
+        $("#placeholder-title").textContent = mode === "map" ? "MAP — Coming soon" : "NETWORK — Coming soon";
+        $("#placeholder-copy").textContent = mode === "map"
+          ? "地名の表記統一と座標の取得ができたら、哲学者の出生地・活動地を地図に表示します。"
+          : "関連人物の関係データを整理した後、影響・継承・批判などのつながりを可視化します。";
+      }
+    }
+    async function init() {
+      document.querySelectorAll(".mode").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      document.querySelectorAll("[data-timeline-style]").forEach((button) => button.addEventListener("click", () => setTimelineStyle(button.dataset.timelineStyle)));
+      $("#back-to-time").addEventListener("click", () => setMode("time"));
+      searchInput.addEventListener("input", renderTimeline);
+      eraFilter.addEventListener("change", renderTimeline);
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("demo") === "1") {
+        allPhilosophers = DEMO_PHILOSOPHERS;
+        $("#dataset-label").textContent = "DEMO DATA";
+        status.textContent = "デモ表示中です。実データ接続時は ?demo=1 を外して開いてください。";
+      } else {
+        try {
+          const response = await fetch("./philosophers.json", { cache: "no-cache" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
+          allPhilosophers = Array.isArray(data) ? data : data.philosophers;
+          if (!Array.isArray(allPhilosophers)) throw new Error("JSON内に philosophers 配列がありません");
+          $("#dataset-label").textContent = `${allPhilosophers.length} PHILOSOPHERS`;
+          status.textContent = `データ更新：${data.updatedAt || "日時情報なし"}`;
+        } catch (error) {
+          allPhilosophers = [];
+          $("#dataset-label").textContent = "DATA NOT CONNECTED";
+          status.classList.add("error");
+          status.textContent = `データを読み込めませんでした（${error.message}）。先に philosophers.json を同じフォルダーへ配置してください。表示確認には URL の末尾に ?demo=1 を付けられます。`;
+        }
+      }
+      fillEraFilter(allPhilosophers);
+      renderTimeline();
+      setTimelineStyle(timelineStyle);
+    }
+    init();
+  </script>
+</body>
+</html>
