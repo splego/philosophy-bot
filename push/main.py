@@ -61,6 +61,13 @@ def lambda_handler(event, context):
         - 古代、中世、近代、現代、西洋、東洋などを幅広く候補として考えること
         - 「代表的で説明しやすい人物」を優先するのではなく、候補を広く想定した上で一人を選ぶこと
         - すでに選出済の人物：{published_names}の中からは選ばないでください。
+        - birth_placeは出生した都市・地域と国を入れること
+        - death_placeは死没した都市・地域と国を入れること
+        - 生没地が不明な場合はnullにすること
+        - locationsには、その人物の人生や思想形成に重要だった活動地を2〜3か所程度入れること
+        - locationsには出生地・死没地を含めてもよい
+        - 地名は現在一般的に使われる都市・地域名を優先すること
+        - 座標は出力しないこと
 
         回答は次のJSON形式だけで回答すること。JSON以外の文章は出力禁止。
 
@@ -90,7 +97,25 @@ def lambda_handler(event, context):
 
             "schools": [
                 "学派・思想的伝統"
+            ],
+
+            "birth_place": {
+            "name": "出生地",
+            "country": "国"
+            },
+
+            "death_place": {
+                "name": "死没地",
+                "country": "国"
+            },
+
+            "locations": [
+                {
+                    "name": "活動地",
+                    "country": "国"
+                }
             ]
+            
         }}
         """
     }
@@ -136,6 +161,9 @@ def lambda_handler(event, context):
 
     ideas = result["ideas"]
     schools = result["schools"]
+    birth_place = result["birth_place"]
+    death_place = result["death_place"]
+    locations = result["locations"]
 
     file_key = f"philosophers/{slug}.html"
     detail_url = f"https://dk0brv3hfi7uc.cloudfront.net/{file_key}"
@@ -610,8 +638,13 @@ def lambda_handler(event, context):
             "era": era,
 
             "summary": summary,
+            "question": question,
             "ideas": ideas,
             "schools": schools,
+
+            "birth_place": birth_place,
+            "death_place": death_place,
+            "locations": locations,
             
             "publishedAt": published_at,
             "articleUrl": detail_url
