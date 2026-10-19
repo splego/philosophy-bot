@@ -12,6 +12,10 @@ dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("users")
 philosophers_table = dynamodb.Table("philosophers")
 
+# 思想ネットワーク用
+philosophy_nodes_table = dynamodb.Table("philosophy_nodes")
+philosophy_edges_table = dynamodb.Table("philosophy_edges")
+
 s3 = boto3.client("s3")
 
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
@@ -67,6 +71,8 @@ def refresh_philosopher_catalog():
         "question",
         "ideas",
         "schools",
+        "philosophy_nodes",
+        "philosophy_edges",
         "birth_place",
         "death_place",
         "locations",
@@ -107,6 +113,21 @@ def refresh_philosopher_catalog():
 
 
 def lambda_handler(event, context):
+
+    # 思想ネットワーク用テーブルのアクセス確認
+    if isinstance(event, dict) and event.get("action") == "check_graph_tables":
+        philosophy_nodes_table.scan(Limit=1)
+        philosophy_edges_table.scan(Limit=1)
+
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": "Graph tables accessible",
+                "philosophy_nodes": "ok",
+                "philosophy_edges": "ok"
+            }, ensure_ascii=False)
+        }
+
 
     if isinstance(event, dict) and event.get("action") == "refresh_catalog":
         refresh_philosopher_catalog()
@@ -166,6 +187,20 @@ def lambda_handler(event, context):
         - 地名は現在一般的に使われる都市・地域名を優先すること
         - 座標は出力しないこと
 
+        【ideasの条件】
+        - その人物の思想を理解するうえで重要な概念を3〜5個選ぶこと。
+        - nameには一般的に使われる標準的な日本語名称を使うこと。
+        - summaryでは概念の要点を短く説明すること。
+        - detailでは概念の意味、思想上の役割、問題意識を具体的に説明すること。
+        - questionは読者がその概念について考えるための問いにすること。
+        - 概念名だけを変えた重複項目を作らないこと。
+
+        【schoolsの条件】
+        - その人物と関係がある学派・思想的伝統だけを挙げること。
+        - 概念と学派を混同しないこと。
+        - summaryとdetailには学派・伝統の特徴を説明すること。
+        - 関係が不明確な学派を無理に挙げないこと。
+
         回答は次のJSON形式だけで回答すること。JSON以外の文章は出力禁止。
 
         {{
@@ -187,13 +222,20 @@ def lambda_handler(event, context):
             "question": "その思想について考えるための短い問い",
 
             "ideas": [
-                "思想・概念1",
-                "思想・概念2",
-                "思想・概念3"
+                {{
+                    "name": "概念名",
+                    "summary": "概念の短い説明",
+                    "detail": "概念の詳しい解説",
+                    "question": "この概念について考えるための問い"
+                }}
             ],
 
             "schools": [
-                "学派・思想的伝統"
+                {{
+                    "name": "学派・思想的伝統の名称",
+                    "summary": "学派の短い説明",
+                    "detail": "学派の詳しい解説"
+                }}            
             ],
 
             "birth_place": {{
@@ -238,6 +280,17 @@ def lambda_handler(event, context):
     
     # 哲学者名をタイトルに
     result = json.loads(message)
+
+    # AIが返すideas / schoolsの形式確認専用
+    if isinstance(event, dict) and event.get("action") == "test_ideas_format":
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "ideas": result.get("ideas", []),
+                "schools": result.get("schools", [])
+            }, ensure_ascii=False)
+        }
+
     title = result["name"]
     name_en = result["name_en"]
     wiki_title = result["wikipedia_title"]
@@ -256,8 +309,23 @@ def lambda_handler(event, context):
     summary = result["summary"]
     question = result["question"]
 
-    ideas = result["ideas"]
-    schools = result["schools"]
+    # AIが返した詳細付きデータを保持する
+    idea_entries = result.get("ideas", [])
+    school_entries = result.get("schools", [])
+
+    # 既存の画面・DB向けに、名前だけの配列を作る
+    ideas = []
+    for entry in idea_entries:
+        name = entry.get("name") if isinstance(entry, dict) else entry
+        if isinstance(name, str) and name.strip():
+            ideas.append(name.strip())
+
+    schools = []
+    for entry in school_entries:
+        name = entry.get("name") if isinstance(entry, dict) else entry
+        if isinstance(name, str) and name.strip():
+            schools.append(name.strip())
+
     birth_place = result["birth_place"]
     death_place = result["death_place"]
     locations = result["locations"]
