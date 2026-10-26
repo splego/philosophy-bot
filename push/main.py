@@ -7,6 +7,7 @@ import os
 import random
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal
+from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("users")
@@ -111,6 +112,73 @@ def refresh_philosopher_catalog():
         "件"
     )
 
+def normalize_graph_entries(entries, node_type):
+    """AIの出力を、独立したノードのデータ形式に整える。"""
+    nodes = []
+
+    for entry in entries or []:
+        if isinstance(entry, str):
+            entry = {"name": entry}
+
+        if not isinstance(entry, dict):
+            continue
+
+        name = str(entry.get("name", "")).strip()
+        if not name:
+            continue
+
+        node = {
+            "node_id": f"{node_type}:{name}",
+            "node_type": node_type,
+            "name": name,
+            "summary": str(entry.get("summary", "")).strip(),
+            "detail": str(entry.get("detail", "")).strip(),
+            "status": "draft"
+        }
+
+        question = str(entry.get("question", "")).strip()
+        if question:
+            node["question"] = question
+
+        nodes.append(node)
+
+    return nodes
+
+
+def ensure_graph_node(node):
+    """既存ノードを保護しながら、新規ノードだけを登録する。"""
+    response = philosophy_nodes_table.get_item(
+        Key={"node_id": node["node_id"]},
+        ConsistentRead=True
+    )
+
+    if response.get("Item"):
+        return False
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    item = {
+        **node,
+        "createdAt": now,
+        "updatedAt": now
+    }
+
+    try:
+        philosophy_nodes_table.put_item(
+            Item=item,
+            ConditionExpression="attribute_not_exists(node_id)"
+        )
+        return True
+
+    except ClientError as exc:
+        error_code = exc.response.get("Error", {}).get("Code")
+
+        if error_code == "ConditionalCheckFailedException":
+            # 同じノードが先に登録されていた場合は上書きしない
+            return False
+
+        raise
+
 
 def lambda_handler(event, context):
 
@@ -128,6 +196,69 @@ def lambda_handler(event, context):
             }, ensure_ascii=False)
         }
 
+ # 思想ネットワーク：登録済み哲学者をノード化
+    if (
+        isinstance(event, dict)
+        and event.get("action") == "save_philosopher_node"
+    ):
+        name = event.get("name", "").strip()
+
+        if not name:
+            return {
+                "statusCode": 400,
+                "body": json.dumps({
+                    "error": "name is required"
+                }, ensure_ascii=False)
+            }
+
+        response = philosophers_table.get_item(
+            Key={"name": name},
+            ConsistentRead=True
+        )
+        philosopher = response.get("Item")
+
+        if not philosopher:
+            return {
+                "statusCode": 404,
+                "body": json.dumps({
+                    "error": "Philosopher not found",
+                    "name": name
+                }, ensure_ascii=False)
+            }
+
+        slug = philosopher["slug"]
+
+        node = {
+            "node_id": f"philosopher:{slug}",
+            "node_type": "philosopher",
+            "name": philosopher["name"],
+            "name_en": philosopher.get("name_en", ""),
+            "slug": slug,
+            "articleUrl": philosopher.get(
+                "articleUrl",
+                f"https://dk0brv3hfi7uc.cloudfront.net/philosophers/{slug}.html"
+            ),
+            "summary": philosopher.get("summary", ""),
+            "detail": "",
+            "aliases": [],
+            "source_refs": [],
+            "status": "draft"
+        }
+
+        created = ensure_graph_node(node)
+
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": (
+                    "Philosopher node created"
+                    if created
+                    else "Node already exists; left unchanged"
+                ),
+                "node_id": node["node_id"],
+                "created": created
+            }, ensure_ascii=False)
+        }
 
     if isinstance(event, dict) and event.get("action") == "refresh_catalog":
         refresh_philosopher_catalog()
@@ -288,6 +419,43 @@ def lambda_handler(event, context):
             "body": json.dumps({
                 "ideas": result.get("ideas", []),
                 "schools": result.get("schools", [])
+            }, ensure_ascii=False)
+        }
+
+    # 思想のデータが登録されるか確認する
+    if (
+        isinstance(event, dict)
+        and event.get("action") == "save_graph_nodes_test"
+    ):
+        idea_nodes = normalize_graph_entries(
+            result.get("ideas", []),
+            "concept"
+        )
+
+        school_nodes = normalize_graph_entries(
+            result.get("schools", []),
+            "school"
+        )
+
+        created = []
+        existing = []
+
+        for node in idea_nodes + school_nodes:
+            was_created = ensure_graph_node(node)
+
+            if was_created:
+                created.append(node["node_id"])
+            else:
+                existing.append(node["node_id"])
+
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": "Draft nodes saved",
+                "created_count": len(created),
+                "existing_count": len(existing),
+                "created": created,
+                "existing": existing
             }, ensure_ascii=False)
         }
 
@@ -820,6 +988,56 @@ def lambda_handler(event, context):
         refresh_philosopher_catalog()
     except Exception as e:
         print("哲学者一覧JSONの更新に失敗:", repr(e))
+
+    # 現象学ノードの登録テスト
+    if isinstance(event, dict) and event.get("action") == "save_intentionality_test":
+        now = datetime.now(timezone.utc).isoformat()
+        node_id = "concept:intentionality"
+
+        item = {
+            "node_id": node_id,
+            "node_type": "concept",
+            "name": "志向性",
+            "aliases": [],
+            "summary": "意識が何かについての意識であるという、意識と対象の関係を示す概念。",
+            "detail": "",
+            "source_refs": [],
+            "status": "draft",
+            "createdAt": now,
+            "updatedAt": now
+        }
+
+        try:
+            philosophy_nodes_table.put_item(
+                Item=item,
+                ConditionExpression="attribute_not_exists(node_id)"
+            )
+
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "Node created",
+                    "node_id": node_id,
+                    "status": "draft"
+                }, ensure_ascii=False)
+            }
+
+        except philosophy_nodes_table.meta.client.exceptions.ConditionalCheckFailedException:
+            existing = philosophy_nodes_table.get_item(
+                Key={"node_id": node_id}
+            ).get("Item", {})
+
+            return {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "Node already exists; left unchanged",
+                    "node_id": node_id,
+                    "existing_name": existing.get("name"),
+                    "status": existing.get("status")
+                }, ensure_ascii=False)
+            }
+
+
 
     response = table.scan()
     items = response.get("Items", [])
