@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f4f0">
+<title>思想ネットワーク｜現象学の系譜 — Daily Philosopher</title>
+<style>
+:root{color-scheme:light;--bg:#f5f4f0;--paper:rgba(255,255,255,.82);--paper-solid:#fffefa;--line:#dedbd5;--line-dark:#cac6bd;--text:#292727;--muted:#777b80;--accent:#8797a3;--accent-dark:#5f7786;--accent-pale:#e8edef;--sand:#e9dfce;--sand-stroke:#b6a487;--green:#e0e8df;--green-stroke:#94a792;--rose:#eee0db;--rose-stroke:#bb958b;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--text);background:var(--bg);line-height:1.7;min-height:100vh}body:before{content:"";position:fixed;inset:-30%;z-index:-1;background:radial-gradient(circle at 20% 30%,rgba(0,0,0,.028) 0 8%,transparent 8.5%),radial-gradient(circle at 75% 70%,transparent 0 12%,rgba(0,0,0,.022) 12.5% 13%,transparent 13.5%),linear-gradient(35deg,transparent 45%,rgba(0,0,0,.015) 45% 55%,transparent 55%);animation:drift 24s ease-in-out infinite alternate;pointer-events:none}@keyframes drift{from{transform:translate(-3%,-2%) rotate(-4deg) scale(1)}to{transform:translate(4%,3%) rotate(4deg) scale(1.05)}}button,input{font:inherit}button{cursor:pointer}a{color:inherit}.shell{width:min(1580px,calc(100% - 36px));margin:auto}header{height:56px;background:rgba(255,255,255,.89);border-bottom:1px solid var(--line);display:flex;align-items:center}.head-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:12px;letter-spacing:.12em;font-weight:600}.brand span{color:var(--muted);font-weight:400;margin-left:10px;letter-spacing:.04em}.back-link{font-size:11px;color:var(--accent-dark);text-decoration:none;border-bottom:1px solid #bfc8cc;padding:3px 0}.hero{padding:18px 0 14px;display:flex;align-items:end;justify-content:space-between;gap:20px}.eyebrow{font-size:9px;letter-spacing:.22em;color:var(--accent-dark);text-transform:uppercase}.hero h1{margin:2px 0 0;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:clamp(23px,3vw,35px);line-height:1.35;font-weight:500;letter-spacing:.015em}.hero p{max-width:690px;margin:6px 0 0;color:#686b6e;font-size:12px;line-height:1.8}.hero-meta{flex:0 0 auto;text-align:right;color:var(--muted);font-size:10px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.search-wrap{display:flex;gap:7px;align-items:center;min-width:min(100%,280px);flex:1}.search{width:min(100%,340px);min-height:35px;background:rgba(255,255,255,.72);border:1px solid var(--line-dark);border-radius:2px;padding:6px 10px;outline:none;font-size:12px}.search:focus{border-color:var(--accent-dark);box-shadow:0 0 0 2px #8797a31c}.toolbar-note{font-size:10px;color:var(--muted)}.zoom-tools{display:flex;gap:4px}.small-btn{border:1px solid var(--line);background:#ffffffa8;min-width:33px;min-height:31px;padding:3px 8px;font-size:11px;color:#50565a}.small-btn:hover,.small-btn:focus-visible{border-color:var(--accent-dark);background:#fff}.layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:12px;align-items:stretch;padding:12px 0 25px}.graph-card{min-width:0;border:1px solid #d6d2ca;background:rgba(255,254,250,.64);box-shadow:0 5px 22px #453c2d08}.graph-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);background:#fff9}.graph-head h2{font-size:12px;letter-spacing:.07em;margin:0;font-weight:600}.graph-status{font-size:10px;color:var(--muted)}.graph-stage{position:relative;height:min(72vh,740px);min-height:560px;overflow:hidden;touch-action:pan-y;background:radial-gradient(ellipse at 50% 42%,rgba(232,225,211,.30),transparent 65%)}#graph{display:block;width:100%;height:100%;user-select:none}.grid-dot{fill:#b8b1a4;opacity:.25}.edge{fill:none;stroke-width:1.65;opacity:.66;vector-effect:non-scaling-stroke;transition:opacity .16s,stroke-width .16s}.edge.influence{stroke:#8797a3}.edge.reinterpret{stroke:#ad9278;stroke-dasharray:5 4}.edge.resonance{stroke:#9a9d91;stroke-dasharray:1.5 4;stroke-linecap:round}.edge.dim{opacity:.22}.edge.hot{opacity:1;stroke-width:2.8}.edge-label{font-size:11px;fill:#78776f;paint-order:stroke;stroke:#f7f4ed;stroke-width:4px;stroke-linejoin:round;text-anchor:middle;pointer-events:none;opacity:.93}.edge-label.dim{opacity:.12}.node{cursor:pointer;outline:none;transition:opacity .18s}.node.dim{opacity:.56}.node rect{stroke-width:1.25;vector-effect:non-scaling-stroke;transition:stroke-width .14s,filter .14s}.node.philosopher rect{fill:#e4eaec;stroke:#899da8}.node.system rect{fill:#e9dfce;stroke:#b6a487}.node.method rect{fill:#e0e8df;stroke:#94a792}.node.concept rect{fill:#fffdf8;stroke:#c8c1b6}.node.special rect{fill:#eee0db;stroke:#bb958b}.node .node-title{fill:#2f302e;font-size:15px;font-weight:600;text-anchor:middle;dominant-baseline:middle;pointer-events:none}.node .node-type{fill:#74756f;font-size:10px;text-anchor:middle;pointer-events:none}.node .node-dot{fill:#6c8491;stroke:#fffefa;stroke-width:1.5;vector-effect:non-scaling-stroke}.node:hover rect,.node:focus-visible rect{stroke:#4c6676;stroke-width:2.5;filter:drop-shadow(0 2px 3px #3a474b20)}.node.selected rect{stroke:#4f6d7d;stroke-width:3;filter:drop-shadow(0 3px 5px #3a474b20)}.node.selected .node-dot{fill:#526f7e}.node.search-hit rect{stroke:#8e684f;stroke-width:3}.graph-legend{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:10px 14px;border-top:1px solid var(--line);background:#fff9}.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#686b6e}.line-key{display:inline-block;width:26px;border-top:2px solid #8797a3}.line-key.reinterpret{border-color:#ad9278;border-top-style:dashed}.line-key.resonance{border-color:#9a9d91;border-top-style:dotted}.node-key{display:inline-block;width:9px;height:9px;border-radius:50%;background:#e4eaec;border:1px solid #899da8}.detail-card{min-width:0;display:flex;flex-direction:column;border:1px solid #d6d2ca;background:rgba(255,254,250,.8);box-shadow:0 5px 22px #453c2d08;min-height:0}.detail-top{padding:15px 16px 12px;border-bottom:1px solid var(--line)}.detail-type{display:inline-flex;align-items:center;gap:6px;color:var(--accent-dark);font-size:9px;letter-spacing:.13em;text-transform:uppercase}.type-dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}.detail-title{margin:5px 0 2px;font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:25px;line-height:1.35;font-weight:500}.detail-subtitle{color:var(--muted);font-size:11px}.detail-body{padding:13px 16px 16px;overflow:auto;max-height:calc(min(72vh,740px) - 88px)}.detail-lead{font-size:13px;font-weight:500;line-height:1.9;margin:0 0 13px}.detail-section{padding-top:12px;margin-top:12px;border-top:1px solid #e8e3da}.detail-section h3{font-size:10px;letter-spacing:.12em;color:#77818a;margin:0 0 5px;font-weight:600}.detail-section p{font-size:12px;line-height:1.9;color:#4e5050;margin:0}.detail-section p+p{margin-top:8px}.tags{display:flex;flex-wrap:wrap;gap:6px}.tag-btn{background:#ffffffb5;border:1px solid #dcd7ce;border-radius:999px;padding:4px 9px;font-size:10px;color:#51575a}.tag-btn:hover,.tag-btn:focus-visible{background:#e8edef;border-color:#a8b5bb}.relation-list{display:flex;flex-direction:column;gap:6px}.relation-btn{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;text-align:left;background:#fff9;border:1px solid #e1ddd5;padding:8px 9px;color:var(--text)}.relation-btn:hover,.relation-btn:focus-visible{background:#eef1f1;border-color:#c1cdd1}.relation-btn strong{display:block;font-size:11px;font-weight:600}.relation-btn small{display:block;color:var(--muted);font-size:9px;margin-top:1px}.relation-arrow{color:var(--accent-dark);font-size:17px}.inline-note{font-size:10px;color:var(--muted);line-height:1.7;padding:10px 12px;margin:13px 0 0;background:#f0ede6;border-left:2px solid #b5a58d}.sources{padding:12px 0 26px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:10px}.sources a{color:#697c85}.footer-note{margin-left:auto}.mobile-detail-label{display:none}
+@media(max-width:980px){.layout{grid-template-columns:minmax(0,1fr) 310px}.graph-stage{min-height:500px}.detail-title{font-size:22px}.shell{width:min(100% - 24px,1580px)}}
+@media(max-width:720px){header{height:50px}.shell{width:calc(100% - 20px)}.hero{align-items:start;padding:15px 0 12px}.hero h1{font-size:25px}.hero p{font-size:11px}.hero-meta{display:none}.toolbar{align-items:stretch;gap:8px}.search-wrap{min-width:100%;}.search{flex:1;width:100%;min-width:0}.toolbar-note{display:none}.zoom-tools{justify-content:flex-end}.layout{display:flex;flex-direction:column;gap:10px;padding-top:10px}.graph-head{padding:9px 11px}.graph-stage{height:520px;min-height:470px;max-height:65vh}.graph-legend{gap:8px;padding:9px 10px}.legend-item{font-size:9px}.detail-card{min-height:0}.detail-top{padding:12px 13px 10px}.detail-title{font-size:23px}.detail-body{max-height:none;overflow:visible;padding:11px 13px 14px}.detail-section{margin-top:10px;padding-top:10px}.mobile-detail-label{display:inline;color:var(--muted);font-size:9px;margin-left:auto}.sources{gap:8px 13px}.footer-note{width:100%;margin-left:0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
+/* Full-screen graph with glass overlays */
+html,body{width:100%;height:100%;overflow:hidden}
+body{min-height:100%;background:#f3f1eb}
+header{position:fixed;inset:0 0 auto;height:46px;z-index:30;background:rgba(250,249,245,.52);border-bottom:1px solid rgba(183,177,165,.42);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.shell{width:auto;max-width:none;margin:0}
+main.shell{position:relative;width:100%;height:100dvh;margin:0;padding:0;overflow:hidden}
+.head-inner{height:100%;padding:0 18px}
+.brand{font-size:11px;letter-spacing:.13em}
+.back-link{font-size:11px;padding:2px 0}
+.hero{position:fixed;z-index:12;top:58px;left:18px;width:min(420px,calc(100vw - 36px));display:block;padding:12px 15px 13px;border:1px solid rgba(200,194,182,.56);border-radius:14px;background:rgba(250,249,245,.55);box-shadow:0 8px 30px rgba(55,49,40,.05);backdrop-filter:blur(15px) saturate(1.15);-webkit-backdrop-filter:blur(15px) saturate(1.15)}
+.hero .eyebrow{font-size:9px}
+.hero h1{font-size:clamp(20px,2.2vw,28px);margin:1px 0 2px}
+.hero p{font-size:11px;line-height:1.65;margin:4px 0 0;max-width:390px}
+.hero-meta{display:none}
+.toolbar{position:fixed;z-index:14;top:58px;right:18px;width:min(365px,calc(100vw - 36px));padding:9px;gap:8px;flex-wrap:nowrap;border:1px solid rgba(200,194,182,.56);border-radius:14px;background:rgba(250,249,245,.52);box-shadow:0 8px 30px rgba(55,49,40,.05);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+.search-wrap{min-width:0;gap:0}
+.search{width:100%;min-width:0;min-height:34px;background:rgba(255,255,255,.48);border-color:rgba(180,174,162,.6);border-radius:8px;font-size:12px}
+.toolbar-note{display:none}
+.zoom-tools{flex:0 0 auto}
+.small-btn{min-width:31px;min-height:32px;border-radius:8px;background:rgba(255,255,255,.48);border-color:rgba(180,174,162,.55)}
+.layout{display:block;position:static;width:100%;height:100%;padding:0;margin:0}
+.graph-card{position:static;width:100%;height:100%;min-width:0;border:0;background:transparent;box-shadow:none}
+.graph-head{display:none}
+.graph-stage{position:fixed;inset:0;z-index:1;width:100vw;height:100vh;height:100dvh;min-height:0;max-height:none;overflow:hidden;border:0;touch-action:none;background:radial-gradient(ellipse at 52% 47%,rgba(232,225,211,.34),transparent 58%),linear-gradient(135deg,rgba(249,247,241,.25),rgba(236,233,225,.16))}
+#graph{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#graph:active{cursor:grabbing}
+#scene{will-change:transform}
+.node .node-title{font-size:17px}
+.node .node-type{font-size:11px}
+.node rect{stroke-width:1.4}
+.node.selected rect{stroke-width:3.2;filter:drop-shadow(0 5px 10px rgba(58,71,75,.15))}
+.edge{stroke-width:1.8;opacity:.72}
+.edge.hot{stroke-width:3}
+.graph-legend{position:fixed;z-index:13;right:18px;bottom:16px;width:max-content;max-width:min(520px,calc(100vw - 36px));padding:10px 13px;gap:12px;border:1px solid rgba(200,194,182,.56);border-radius:13px;background:rgba(250,249,245,.48);box-shadow:0 8px 30px rgba(55,49,40,.04);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px)}
+.legend-item{font-size:10px}
+.detail-card{position:fixed;z-index:16;left:18px;bottom:18px;width:min(395px,calc(100vw - 36px));max-height:min(59dvh,650px);min-height:0;overflow:hidden;border:1px solid rgba(194,187,175,.62);border-radius:17px;background:rgba(250,249,245,.60);box-shadow:0 16px 50px rgba(55,49,40,.11);backdrop-filter:blur(18px) saturate(1.16);-webkit-backdrop-filter:blur(18px) saturate(1.16);transition:background .2s,border-color .2s}
+.detail-top{position:relative;padding:15px 48px 12px 17px;border-bottom:1px solid rgba(210,204,193,.56);background:rgba(255,255,255,.08)}
+.detail-title{font-size:27px}
+.detail-subtitle{font-size:11px}
+.detail-body{max-height:calc(min(59dvh,650px) - 92px);padding:13px 17px 18px;overflow:auto;overscroll-behavior:contain}
+.detail-lead{font-size:13px;line-height:1.85}
+.detail-section p{font-size:12px;line-height:1.85}
+.detail-card.collapsed .detail-body{display:none}
+.detail-card.collapsed{max-height:none;background:rgba(250,249,245,.70)}
+.panel-action{position:absolute;right:12px;top:13px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(180,174,162,.62);background:rgba(255,255,255,.5);color:#555b5d;font-size:18px;line-height:1}
+.panel-action:hover{background:rgba(255,255,255,.86)}
+.sources{position:fixed;z-index:12;right:18px;bottom:65px;width:min(500px,calc(100vw - 36px));padding:9px 12px;gap:6px 13px;border:1px solid rgba(200,194,182,.48);border-radius:12px;background:rgba(250,249,245,.40);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:9px}
+.sources .footer-note{width:100%;margin:0}
+.mobile-detail-label{display:none}
+@media(max-width:900px){
+ .hero{width:min(360px,calc(100vw - 36px))}
+ .hero p{max-width:330px}
+ .toolbar{width:min(340px,calc(100vw - 36px))}
+ .graph-legend{max-width:calc(100vw - 36px);gap:8px}
+ .detail-card{width:min(365px,calc(100vw - 36px))}
+ .sources{width:min(420px,calc(100vw - 36px))}
+}
+@media(max-width:720px){
+ header{height:44px}
+ .head-inner{padding:0 12px}
+ .brand{font-size:10px;letter-spacing:.1em}
+ .brand span{margin-left:6px;font-size:9px}
+ .back-link{font-size:10px}
+ .hero{top:51px;left:10px;width:auto;max-width:calc(100vw - 20px);right:10px;padding:8px 11px 9px;border-radius:11px}
+ .hero h1{font-size:20px;line-height:1.25}
+ .hero p{display:none}
+ .hero .eyebrow{font-size:8px}
+ .toolbar{top:105px;left:10px;right:10px;width:auto;max-width:none;padding:6px;gap:6px;border-radius:11px}
+ .search{min-height:32px;font-size:11px}
+ .small-btn{min-width:29px;min-height:31px;padding:3px 6px;font-size:10px}
+ .graph-stage{height:100dvh;min-height:0;max-height:none}
+ .detail-card{left:10px;right:10px;bottom:10px;width:auto;max-height:42dvh;border-radius:14px}
+ .detail-top{padding:10px 45px 9px 12px}
+ .detail-title{font-size:22px;margin-top:3px}
+ .detail-subtitle{font-size:10px}
+ .detail-type{font-size:8px}
+ .panel-action{right:9px;top:9px;width:26px;height:26px}
+ .detail-body{max-height:calc(42dvh - 78px);padding:10px 12px 13px}
+ .detail-lead{font-size:12px;margin-bottom:8px}
+ .detail-section{margin-top:8px;padding-top:8px}
+ .detail-section p{font-size:11px;line-height:1.75}
+ .relation-btn{padding:6px 8px}
+ .graph-legend{display:none}
+ .legend-item{font-size:9px}
+ .line-key{width:18px}
+ .sources{display:none}
+ .mobile-detail-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){#scene{transition:none!important}}
+
+
+/* Frosted glass is applied to the information / annotation UI only. */
+.detail-card {
+  background: rgba(248, 247, 242, .69) !important;
+  border: 1px solid rgba(190, 184, 172, .64) !important;
+  box-shadow: 0 14px 42px rgba(57, 51, 42, .13), inset 0 1px 0 rgba(255,255,255,.62) !important;
+  -webkit-backdrop-filter: blur(19px) saturate(1.15) !important;
+  backdrop-filter: blur(19px) saturate(1.15) !important;
+  border-radius: 17px;
+}
+.detail-top {
+  background: rgba(255,255,255,.13) !important;
+  border-bottom: 1px solid rgba(210,204,193,.58) !important;
+}
+.detail-body { background: transparent; }
+.detail-section { border-top: 1px solid rgba(186,180,168,.48); }
+.detail-section p,
+.detail-lead,
+.detail-title,
+.detail-subtitle,
+.detail-section h3,
+.detail-type {
+  text-shadow: 0 1px 2px rgba(255,255,255,.35);
+}
+.relation-btn,
+.tag-btn {
+  background: rgba(255,255,255,.58) !important;
+  border: 1px solid rgba(209,203,192,.76) !important;
+  box-shadow: 0 2px 7px rgba(58,51,42,.035);
+  border-radius: 9px;
+  text-shadow: none;
+}
+.relation-btn { padding: 8px 9px; }
+.relation-btn:hover,
+.relation-btn:focus-visible,
+.tag-btn:hover,
+.tag-btn:focus-visible {
+  background: rgba(232,237,238,.88) !important;
+  border-color: rgba(95,119,134,.62) !important;
+}
+.tag-btn { padding: 4px 9px; }
+.inline-note {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: rgba(235,230,219,.72) !important;
+  border-left: 2px solid #b5a58d;
+  border-radius: 0 8px 8px 0;
+}
+.panel-action {
+  background: rgba(255,255,255,.72) !important;
+  border: 1px solid rgba(180,174,162,.66) !important;
+  box-shadow: 0 2px 8px rgba(55,49,40,.07);
+  text-shadow: none;
+}
+.panel-action:hover { background: rgba(255,255,255,.95) !important; }
+.detail-card.collapsed {
+  background: rgba(248,247,242,.76) !important;
+}
+@media(max-width:720px) {
+  .hero { top: 55px; left: 12px; width: calc(100vw - 24px); }
+  .toolbar { top: auto; right: 10px; bottom: 12px; width: min(340px,calc(100vw - 20px)); }
+  .detail-card { left: 12px; right: 12px; bottom: 58px; width: auto; max-height: 40dvh; }
+  .detail-body { max-height: calc(40dvh - 72px); }
+}
+
+
+
+/* Visual pass: match the Daily Philosopher article and MAP palette.
+   The only frosted-glass surface is the node detail UI (.detail-card). */
+body {
+  background: #f5f4f0 !important;
+}
+header {
+  background: #fff !important;
+  border-bottom: 1px solid #dedbd6 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.hero,
+.toolbar,
+.graph-legend,
+.sources {
+  background: #fbfaf7 !important;
+  border-color: #dcd9d3 !important;
+  box-shadow: 0 4px 18px rgba(55,49,40,.045) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.hero { border-radius: 8px !important; }
+.toolbar { border-radius: 8px !important; }
+.search {
+  background: #fff !important;
+  border-color: #c9c5bd !important;
+}
+.small-btn {
+  color: #41474a !important;
+  background: #fff !important;
+  border-color: #d0ccc4 !important;
+}
+.graph-stage {
+  background-color: #f5f4f0 !important;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(0,0,0,.035) 0 8%, transparent 8.5%),
+    radial-gradient(circle at 75% 70%, transparent 0 12%, rgba(0,0,0,.025) 12.5% 13%, transparent 13.5%),
+    linear-gradient(35deg, transparent 45%, rgba(0,0,0,.018) 45% 55%, transparent 55%) !important;
+}
+.grid-dot { fill: #aaa396 !important; opacity: .36 !important; }
+.edge { stroke-width: 2 !important; opacity: .86 !important; }
+.edge.influence { stroke: #637f8d !important; }
+.edge.reinterpret { stroke: #a57c56 !important; }
+.edge.resonance { stroke: #7d8a79 !important; }
+.edge.dim { opacity: .42 !important; }
+.edge.hot { opacity: 1 !important; stroke-width: 3.2 !important; }
+.edge-label {
+  fill: #555b5b !important;
+  stroke: #f5f4f0 !important;
+  stroke-width: 4.5px !important;
+  opacity: .98 !important;
+}
+.edge-label.dim { opacity: .3 !important; }
+.node { opacity: 1 !important; }
+.node.dim { opacity: .78 !important; }
+.node.philosopher rect { fill: #dfe8ec !important; stroke: #6e8794 !important; }
+.node.system rect { fill: #eadfca !important; stroke: #9e8666 !important; }
+.node.method rect { fill: #dce7db !important; stroke: #789477 !important; }
+.node.concept rect { fill: #fffefa !important; stroke: #a9a297 !important; }
+.node.special rect { fill: #ecd9d3 !important; stroke: #ad8176 !important; }
+.node .node-title { fill: #242a2c !important; font-size: 18px !important; }
+.node .node-type { fill: #535b5e !important; font-size: 11px !important; }
+.node .node-dot { fill: #587889 !important; stroke: #fffefa !important; }
+.node:hover rect,
+.node:focus-visible rect { stroke: #405d6b !important; stroke-width: 2.7 !important; }
+.node.selected rect {
+  stroke: #3f6475 !important;
+  stroke-width: 3.6 !important;
+  filter: drop-shadow(0 4px 7px rgba(43,59,67,.2)) !important;
+}
+.node.selected.philosopher rect { fill: #cbdde5 !important; }
+.node.selected.system rect { fill: #e2d0ae !important; }
+.node.selected.method rect { fill: #c9ddc8 !important; }
+.node.selected.concept rect { fill: #f4efe4 !important; }
+.node.selected.special rect { fill: #e4c9c0 !important; }
+.node.selected .node-title { fill: #1f2a30 !important; }
+.node.search-hit rect { stroke: #925f3d !important; stroke-width: 3.5 !important; }
+
+/* BUILD: DARK-OVERLAY-V1 — dark translucent overlay for the selected-node information UI only. */
+.detail-card {
+  color: #f2f0eb !important;
+  background: rgba(29, 33, 35, .86) !important;
+  border: 1px solid rgba(230, 226, 216, .24) !important;
+  box-shadow: 0 18px 48px rgba(25, 27, 28, .24), inset 0 1px 0 rgba(255,255,255,.07) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.detail-top {
+  background: rgba(12, 14, 15, .20) !important;
+  border-bottom: 1px solid rgba(235, 231, 221, .16) !important;
+}
+.detail-type { color: #b9cbd2 !important; }
+.type-dot { background: #9eb6c0 !important; }
+.detail-title { color: #fffdf8 !important; }
+.detail-subtitle { color: #c2c4c2 !important; }
+.detail-body { background: transparent !important; }
+.detail-lead { color: #f0eee8 !important; }
+.detail-section { border-top-color: rgba(235, 231, 221, .17) !important; }
+.detail-section h3 { color: #b4c3c8 !important; }
+.detail-section p { color: #dcddd9 !important; }
+.tags { color: #e5e5df !important; }
+.relation-btn,
+.tag-btn {
+  color: #f1efe9 !important;
+  background: rgba(255,255,255,.085) !important;
+  border: 1px solid rgba(225, 224, 216, .22) !important;
+}
+.relation-btn strong { color: #fffdf8 !important; }
+.relation-btn small { color: #bfc4c4 !important; }
+.relation-arrow { color: #b6cbd3 !important; }
+.relation-btn:hover,
+.relation-btn:focus-visible,
+.tag-btn:hover,
+.tag-btn:focus-visible {
+  background: rgba(158, 182, 192, .20) !important;
+  border-color: rgba(174, 202, 212, .55) !important;
+}
+.inline-note {
+  color: #d5d5cf !important;
+  background: rgba(255,255,255,.075) !important;
+  border-left-color: #b9a589 !important;
+}
+.panel-action {
+  color: #f2f0eb !important;
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(230,226,216,.25) !important;
+  box-shadow: none !important;
+}
+.panel-action:hover { background: rgba(255,255,255,.22) !important; }
+.detail-card.collapsed { background: rgba(29,33,35,.90) !important; }
+@media (max-width:720px) {
+  .hero,
+  .toolbar { background: #fbfaf7 !important; }
+}
+
+
+
+/* MOBILE DISCOVERY FLOW — tap node: compact overview; expand: full-screen reading. */
+.detail-card {
+  z-index: 26 !important;
+  display: flex;
+  transition: top .24s ease, right .24s ease, bottom .24s ease, left .24s ease,
+    width .24s ease, height .24s ease, max-height .24s ease, border-radius .24s ease,
+    opacity .16s ease;
+}
+.detail-card.hidden { display: none !important; }
+.detail-card.compact {
+  height: clamp(190px, 32dvh, 292px);
+  max-height: 32dvh;
+  overflow: hidden;
+}
+.detail-card.compact .detail-top { flex: 0 0 auto; padding-right: 142px; }
+.detail-card.compact .detail-body {
+  flex: 1 1 auto; min-height: 0; max-height: none; overflow: hidden;
+  padding-top: 10px; padding-bottom: 14px;
+}
+.detail-card.compact .detail-body > .detail-section,
+.detail-card.compact .detail-body > .inline-note { display: none !important; }
+.detail-card.compact .detail-lead {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  overflow: hidden; margin-bottom: 0;
+}
+.detail-actions { position: absolute; z-index: 2; top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; }
+.detail-expand-button {
+  min-height: 29px; padding: 3px 10px; border-radius: 999px;
+  color: #f2f0eb; background: rgba(255,255,255,.12);
+  border: 1px solid rgba(230,226,216,.28); font-size: 11px; white-space: nowrap;
+}
+.detail-expand-button:hover, .detail-expand-button:focus-visible { background: rgba(255,255,255,.22); }
+.panel-action { position: static !important; flex: 0 0 29px; width: 29px; height: 29px; padding: 0; font-size: 19px; }
+.detail-card.expanded {
+  top: 54px !important; right: 10px !important; bottom: 10px !important; left: 10px !important;
+  width: auto !important; height: auto !important; max-height: none !important;
+  min-height: 0 !important; overflow: hidden !important; border-radius: 15px !important;
+}
+.detail-card.expanded .detail-top { flex: 0 0 auto; padding: 15px 145px 13px 18px; }
+.detail-card.expanded .detail-body {
+  flex: 1 1 auto; min-height: 0; max-height: none !important; height:auto; overflow-y:auto !important;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 15px 19px 24px;
+}
+.detail-card.expanded .detail-lead { font-size: 14px; line-height: 1.95; }
+.detail-card.expanded .detail-section p { font-size: 13px; line-height: 1.95; }
+.detail-card.expanded .relation-btn { padding: 10px 12px; }
+.detail-card.expanded .relation-btn strong { font-size: 12px; }
+.detail-card.expanded .relation-btn small { font-size: 10px; }
+@media (min-width:721px) {
+  .detail-card.compact { left:18px; bottom:18px; width:min(395px,calc(100vw - 36px)); height:clamp(190px,34dvh,300px); max-height:34dvh; }
+  .detail-card.expanded { top:56px !important; right:12px !important; bottom:12px !important; left:12px !important; }
+}
+@media (max-width:720px) {
+  .detail-card.compact { left:10px !important; right:10px !important; bottom:58px !important; top:auto !important; width:auto !important; height:clamp(190px,31dvh,275px); max-height:31dvh; border-radius:14px !important; }
+  .detail-card.compact .detail-top { padding:10px 117px 9px 12px; }
+  .detail-card.compact .detail-title { font-size:21px; }
+  .detail-card.compact .detail-body { padding:9px 12px 12px; }
+  .detail-card.compact .detail-lead { font-size:12px; line-height:1.75; -webkit-line-clamp:3; }
+  .detail-actions { top:9px; right:9px; gap:5px; }
+  .detail-expand-button { min-height:27px; padding:2px 8px; font-size:10px; }
+  .panel-action { flex-basis:27px; width:27px; height:27px; font-size:18px; }
+  .detail-card.expanded { top:52px !important; right:8px !important; bottom:8px !important; left:8px !important; border-radius:13px !important; }
+  .detail-card.expanded .detail-top { padding:12px 125px 10px 13px; }
+  .detail-card.expanded .detail-title { font-size:23px; }
+  .detail-card.expanded .detail-body { padding:11px 13px 20px; }
+  .detail-card.expanded .detail-lead { font-size:13px; }
+  .detail-card.expanded .detail-section p { font-size:12px; line-height:1.85; }
+  .detail-card.expanded .detail-actions { top:9px; right:9px; }
+}
+@media (max-height:560px) and (max-width:720px) {
+  .detail-card.compact { height:35dvh; max-height:35dvh; }
+  .detail-card.expanded { top:48px !important; }
+}
+
+</style>
+<!-- Build marker: DARK-OVERLAY-V1 + COMPACT-DETAIL-FULLSCREEN + BACKGROUND-RESET / 2026-10-16 -->
+</head>
+<body>
+<header><div class="shell head-inner"><div class="brand">DAILY PHILOSOPHER <span>思想ネットワーク試作</span></div><a class="back-link" href="index.html">← 探索画面へ</a></div></header>
+<main class="shell">
+  <section class="hero">
+    <div><div class="eyebrow">A NETWORK OF IDEAS / SAMPLE 01</div><h1>現象学の系譜</h1><p>フッサール、ハイデガー、メルロ＝ポンティ。思想を記事から記事へたどるのではなく、概念同士のつながりの中で理解するための試作です。ノードを選ぶと、ここを離れずに解説が開きます。</p></div>
+    <div class="hero-meta">3 PHILOSOPHERS<br>1 FRAMEWORK · 9 CONCEPT NODES</div>
+  </section>
+  <section class="toolbar" aria-label="ネットワーク操作"><div class="search-wrap"><input class="search" id="search" type="search" placeholder="思想・哲学者を検索…" aria-label="思想・哲学者を検索"><span class="toolbar-note">ノードを選択して探索</span></div><div class="zoom-tools"><button class="small-btn" id="zoom-out" aria-label="縮小">−</button><button class="small-btn" id="zoom-reset" aria-label="表示をリセット">全体</button><button class="small-btn" id="zoom-in" aria-label="拡大">＋</button></div></section>
+  <section class="layout">
+    <div class="graph-card">
+      <div class="graph-head"><h2>思想のネットワーク</h2><span class="graph-status" id="graph-status">ノードを選択すると、周辺のつながりが強調されます</span></div>
+      <div class="graph-stage" id="graph-stage"><svg id="graph" role="img" aria-label="フッサール、ハイデガー、メルロ＝ポンティと現象学の概念をつなぐ思想ネットワーク" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"><defs><pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle class="grid-dot" cx="2" cy="2" r="1"/></pattern><marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8797a3"/></marker><marker id="arrow-sand" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ad9278"/></marker></defs><rect width="1000" height="700" fill="url(#dots)"/><g id="scene"></g></svg></div>
+      <div class="graph-legend"><span class="legend-item"><i class="line-key"></i>影響・継承</span><span class="legend-item"><i class="line-key reinterpret"></i>批判・方向転換</span><span class="legend-item"><i class="line-key resonance"></i>概念的な共鳴</span><span class="legend-item"><i class="node-key"></i>人物ノード</span></div>
+    </div>
+    <aside class="detail-card compact" id="detail-card" aria-live="polite" aria-atomic="false"><div class="detail-top"><div class="detail-actions"><button type="button" class="detail-expand-button" id="detail-expand" aria-label="解説を全画面で開く">拡大 ↗</button><button type="button" class="panel-action" id="detail-close" aria-label="解説を閉じて全体表示に戻る" title="閉じて全体表示">×</button></div><div class="detail-type"><span class="type-dot" id="detail-dot"></span><span id="detail-type">思想体系</span><span class="mobile-detail-label">概要</span></div><h2 class="detail-title" id="detail-title">現象学</h2><div class="detail-subtitle" id="detail-subtitle">経験の現れ方を問い直す哲学的な方法</div></div><div class="detail-body" id="detail-body"></div></aside>
+  </section>
+  <section class="sources"><strong>参考・確認用：</strong><a href="https://plato.stanford.edu/entries/husserl/" target="_blank" rel="noopener noreferrer">Stanford Encyclopedia of Philosophy — Husserl</a><a href="https://plato.stanford.edu/entries/heidegger/" target="_blank" rel="noopener noreferrer">— Heidegger</a><a href="https://plato.stanford.edu/entries/merleau-ponty/" target="_blank" rel="noopener noreferrer">— Merleau-Ponty</a><a href="https://plato.stanford.edu/archives/fall2004/entries/phenomenology/" target="_blank" rel="noopener noreferrer">— Phenomenology</a><span class="footer-note">※関係線は試作上の整理。哲学的な分類は今後編集する前提です。</span></section>
+</main>
+<script>
+const nodes = [
+ {id:'phenomenology',title:'現象学',short:'現象学',kind:'system',type:'思想の流れ',sub:'経験を、先入観に覆われる前の現れ方から問い直す',x:500,y:70,mx:270,my:66,w:142,h:52,mw:158,mh:48,lead:'現象学は、ものごとを既成の理論で説明する前に、それが経験の中でどのように現れ、どんな意味を持つのかを記述しようとする哲学的な探究。',body:['フッサールは、意識がつねに何かについての意識であるという「志向性」や、経験を丁寧に記述する方法を軸に現象学を確立した。','その後、ハイデガーは現象学を人間存在と存在の問いへと転回させ、メルロ＝ポンティは身体を通して世界を経験することを中心課題として展開した。同じ「現象学」でも、問いの置き方は一様ではない。'],why:'このノードは一枚岩の学説を表すのではなく、方法を受け継ぎながら分岐した思想の流れを表す。',related:['husserl','heidegger','merleau','intentionality','reduction']},
+ {id:'husserl',title:'フッサール',kind:'philosopher',type:'哲学者 · 1859–1938',sub:'現象学の創始者',x:185,y:175,mx:95,my:163,w:140,h:58,mw:152,mh:52,lead:'エトムント・フッサールは、経験に与えられるものを注意深く記述し、意識と対象の関係を明らかにしようとした。現象学の出発点となる人物。',body:['代表的な問いは「私たちは、ものごとをどのように経験し、何かを意味あるものとして理解しているのか」。意識は単なる内面の箱ではなく、つねに何かへと向かうという「志向性」が重要になる。','後期には、科学的な理論や客観的な測定が依拠している、日常的に生きられる世界＝「生活世界」も主題となった。身体性や他者との関係についての分析も、後に続く現象学に大きな影響を与えた。'],why:'ハイデガーとメルロ＝ポンティは、フッサールの方法を受け継ぎながら、それぞれ別の方向へ展開した。単純に同じ学説を継いだわけではない。',related:['phenomenology','intentionality','reduction','lifeworld','livedbody','heidegger','merleau']},
+ {id:'heidegger',title:'ハイデガー',kind:'philosopher',type:'哲学者 · 1889–1976',sub:'存在の問いへ向かう現象学',x:805,y:180,mx:445,my:164,w:150,h:58,mw:152,mh:52,lead:'マルティン・ハイデガーは、現象学を意識の分析にとどめず、「存在するとはどういうことか」という問いへと向け直した。',body:['『存在と時間』では、人間を世界から切り離された観察者として捉えるのではなく、すでに道具を使い、他者と関わり、何かを気にかけながら生きている存在として分析する。ここで中心となるのが「世界内存在」や「現存在（ダーザイン）」である。','フッサールから方法上の影響を受けた一方、超越論的意識を中心とする方向から距離を取り、存在論的・解釈学的な現象学へ転回した。二人の関係は影響と対立の両方を含む。'],why:'ハイデガーはフッサールの単なる後継者ではなく、現象学の出発点を引き継いで、その問い自体を組み替えた人物として見ると関係が分かりやすい。',related:['phenomenology','beingworld','dasein','care','husserl','merleau','lifeworld']},
+ {id:'merleau',title:'メルロ＝ポンティ',kind:'philosopher',type:'哲学者 · 1908–1961',sub:'身体と知覚から世界を捉える',x:500,y:595,mx:270,my:736,w:190,h:62,mw:190,mh:54,lead:'モーリス・メルロ＝ポンティは、私たちが世界を理解するのは、頭の中で表象を組み立てることだけによるのではなく、身体を通して世界に関わっているからだと考えた。',body:['『知覚の現象学』では、身体を外から観察できる物体としてだけ見るのではなく、動き、知覚し、状況に応答する「生きられた身体」として考える。身体は、心が命令する道具でも、単なる物理機械でもない。','彼はフッサールの現象学、特に身体や知覚についての考察、さらにハイデガーなどの思想やゲシュタルト心理学の知見を独自に組み合わせた。受け継いだのは結論の一式というより、経験を記述する探究の仕方だった。'],why:'身体性は独立したトピックではなく、知覚・空間・他者・言語とつながる結節点。このノードをたどると、ネットワークの広がりが見えやすい。',related:['phenomenology','livedbody','perception','bodyschema','husserl','heidegger','lifeworld']},
+ {id:'intentionality',title:'志向性',kind:'concept',type:'主要概念 · フッサール',sub:'意識はつねに何かについての意識である',x:405,y:220,mx:270,my:260,w:132,h:52,mw:144,mh:46,lead:'「見る」「期待する」「恐れる」「思い出す」といった経験は、たいてい何かを見る、何かを期待する、何かを恐れるというように、対象へ向かっている。この対象への向かい方を志向性という。',body:['フッサールは、意識を内側に閉じたものとして扱う代わりに、経験と対象がどのような仕方で結びついているかを分析した。ここで問われるのは、対象が単に存在するかどうかだけでなく、どのような意味で現れているかである。','ハイデガーは、実践的な関わりを含む世界内存在を強調し、メルロ＝ポンティは身体的な知覚や行為を通じた世界への開かれに重点を置く。したがって三者を同じ理論として並べるのではなく、問いの変化としてつなぐ。'],why:'志向性はフッサールを理解する鍵だが、それだけでフッサール哲学全体を代表するわけではない。',related:['husserl','reduction','perception','beingworld']},
+ {id:'reduction',title:'現象学的還元',kind:'method',type:'方法 · フッサール',sub:'当たり前の前提をいったん括弧に入れる',x:115,y:330,mx:95,my:263,w:174,h:56,mw:168,mh:48,lead:'現象学的還元は、世界が存在するという日常的な信念を否定することではなく、それをいったん判断の前提として使うのを控え、経験がどのように成立しているのかを吟味するための方法。',body:['フッサールは、普段は疑わず受け入れている「自然的態度」を括弧に入れ、対象が意識にどのように現れるのかを問う。これは単に内面を眺めることでも、現実世界を幻想だと主張することでもない。','ハイデガーは還元をそのまま中心に据えるのではなく、存在者が自らを示すあり方と、日常的な実践の中での理解を前に出した。ここにも継承と方向転換がある。'],why:'方法のノードを独立させると、哲学者同士がどんな結論を出したかだけでなく、何を手がかりに問いを立てたのかも比較できる。',related:['husserl','phenomenology','intentionality','heidegger']},
+ {id:'lifeworld',title:'生活世界',kind:'concept',type:'主要概念 · 後期フッサール',sub:'科学的説明が前提としている、私たちが生きる世界',x:205,y:500,mx:95,my:367,w:142,h:52,mw:148,mh:46,lead:'生活世界とは、理論や測定を通して構築された世界像よりも手前にある、私たちが日々すでに暮らし、ものを使い、他者と意味を共有している世界のこと。',body:['フッサールは、科学の客観的な記述が重要であることを否定したのではない。むしろ科学も、生活世界での経験や実践を出発点として成立していることを明らかにしようとした。','ハイデガーの「世界内存在」とは同じ概念ではないが、人間を世界の外から眺める主体と見なさず、すでに意味ある世界の中で生きている存在として捉える点に、比較できる接点がある。'],why:'似た概念を一つにまとめてしまわず、重なりと差異を同時に表示することがネットワークの役割になる。',related:['husserl','beingworld','livedbody','merleau']},
+ {id:'beingworld',title:'世界内存在',kind:'concept',type:'主要概念 · ハイデガー',sub:'人間は最初から世界との関わりの中にある',x:780,y:335,mx:445,my:263,w:150,h:54,mw:160,mh:48,lead:'世界内存在は、ハイデガーが人間の存在を表すために用いた中心的な概念。人間がまず孤立して存在し、その後で世界との関係を作る、という見方を退ける。',body:['私たちはハンマーを見ているだけではなく、それを使って何かを作り、目的に向かって行動する。道具は単独の物体としてよりも、仕事や慣習、人とのつながりを含んだ関係の網の目の中で理解される。','この意味で世界は、物の集合にすぎないのではなく、何が大切で、何ができ、何が意味を持つかという実践的な関係のまとまり。メルロ＝ポンティの身体的な世界への関わりと比較できるが、概念の理論的な役割は異なる。'],why:'ここでは「世界」を背景画像のようなものとしてではなく、意味と行為の関係全体として捉える。',related:['heidegger','dasein','care','lifeworld','livedbody']},
+ {id:'dasein',title:'現存在（ダーザイン）',kind:'concept',type:'存在論 · ハイデガー',sub:'自分自身の存在が問題となる存在者',x:900,y:445,mx:445,my:362,w:158,h:56,mw:166,mh:48,lead:'ハイデガーの「現存在（Dasein）」は、人間を単なる生物種として呼ぶ語ではない。自分が存在していることを何らかの形で理解し、自分のあり方が問題となる存在者を指す。',body:['現存在の分析は、意識の中身を分類することから始まるのではなく、日常の行為、他者との共在、気遣い、時間性、死との関係などを手がかりに、人間の存在の構造を明らかにしようとする。','「現存在」は「世界内存在」と切り離された別個の実体ではない。世界内存在は現存在の基本構造を表す。'],why:'ノード同士の近さや線は、単なる用語の一致ではなく、理論の中でどのような役割関係にあるかを表す。',related:['heidegger','beingworld','care']},
+ {id:'care',title:'気遣い・死への存在',kind:'concept',type:'実存論 · ハイデガー',sub:'可能性を引き受けながら存在すること',x:815,y:555,mx:445,my:460,w:174,h:56,mw:176,mh:48,lead:'ハイデガーは現存在の存在を「気遣い（Sorge）」という構造で捉える。ここでの気遣いは、日常語でいう親切心だけではなく、世界や他者、自分自身の可能性にすでに関わっている存在のあり方を指す。',body:['「死への存在」は、いつ死ぬかを考え続けるという意味ではない。自分の可能性には有限性があることを引き受けるとき、日常の選択や自己理解がどう変わるかという問題に関わる。','このノードはハイデガーの実存論的な分析を表す。メルロ＝ポンティの身体的経験と接点を探ることはできるが、同じ概念の言い換えではない。'],why:'ハイデガーの思想を「世界との関わり」だけで説明せず、時間性や有限性へとつながる枝も残しておく。',related:['heidegger','dasein','beingworld']},
+ {id:'livedbody',title:'生きられた身体',kind:'concept',type:'主要概念 · フッサール／メルロ＝ポンティ',sub:'身体は、世界を経験するための単なる物体ではない',x:500,y:420,mx:270,my:560,w:162,h:56,mw:174,mh:48,lead:'生きられた身体とは、外から測定できる物体としての身体だけでなく、動き、感じ、知覚し、世界に向かっている当の身体のこと。身体は世界の中の一つの物であると同時に、世界が現れる視点でもある。',body:['フッサールは身体性や身体を通じた経験を分析し、その仕事は後に公刊された著作だけでなく未刊行草稿を通しても知られるようになった。メルロ＝ポンティはこれらの考察を自らの知覚論の中心に据え、身体を「私はできる」という実践的な能力と結びつけて考えた。','ハイデガーの世界内存在とも、人間を切り離された意識として扱わない点で比較できる。ただし「生きられた身体」と「世界内存在」は同義ではなく、異なる問いから生まれた概念である。'],why:'このノードはフッサールからメルロ＝ポンティへの展開を見せながら、ハイデガーとの比較にも開かれている。',related:['husserl','merleau','perception','bodyschema','beingworld','lifeworld']},
+ {id:'perception',title:'知覚',kind:'concept',type:'主要テーマ · メルロ＝ポンティ',sub:'世界は、身体を通して意味あるものとして現れる',x:365,y:540,mx:270,my:657,w:118,h:52,mw:126,mh:46,lead:'メルロ＝ポンティにとって知覚は、感覚データを受け取り、頭の中で世界の像を組み立てるだけの過程ではない。身体がすでに環境の中で動き、可能性を感じ取っていることが、経験の土台になる。',body:['知覚の経験では、世界はすべてが明示された情報として一度に与えられるのではなく、ある視点から部分的に現れる。それでも身体は、動いたり視線を変えたりしながら、対象との関係を保っている。','メルロ＝ポンティは、経験を純粋な知性だけにも、刺激に反応する機械的な身体だけにも還元しない。知覚は身体と世界の関わりの中で成立する。'],why:'知覚のノードは、生きられた身体や身体図式へつながり、抽象的な概念を具体的な経験へ戻す入口になる。',related:['merleau','livedbody','bodyschema','intentionality']},
+ {id:'bodyschema',title:'身体図式',kind:'concept',type:'主要概念 · メルロ＝ポンティ',sub:'身体の各部と環境が、行為の中で組織される',x:620,y:560,mx:270,my:825,w:136,h:52,mw:142,mh:46,lead:'身体図式は、身体の各部分の位置を頭の中で一覧化した地図というより、何ができるか、どう動けるかという行為のまとまりとして身体が環境に向かう仕方を表す。',body:['道具を使い慣れると、道具は意識的に操作する対象というより、行為の可能性の一部になることがある。メルロ＝ポンティは、こうした身体の実践的な組織化を考える上で身体図式を重視した。','この概念は、身体を客観的な部品の総和として見る考え方と、世界を頭の中の表象に還元する考え方の両方を問い直す。'],why:'知覚から行為へ、身体から世界へとネットワークが広がる接点。',related:['merleau','livedbody','perception']}
+];
+const edges = [
+ {a:'husserl',b:'phenomenology',type:'influence',label:'方法を確立'},
+ {a:'phenomenology',b:'merleau',type:'resonance',label:'独自の現象学'},
+ {a:'husserl',b:'intentionality',type:'influence',label:'分析の中心'},
+ {a:'husserl',b:'reduction',type:'influence',label:'方法'},
+ {a:'husserl',b:'lifeworld',type:'influence',label:'後期の主題'},
+ {a:'husserl',b:'livedbody',type:'influence',label:'身体性の分析'},
+ {a:'husserl',b:'heidegger',type:'reinterpret',label:'継承しつつ転回'},
+ {a:'husserl',b:'merleau',type:'influence',label:'草稿も含め影響'},
+ {a:'heidegger',b:'phenomenology',type:'reinterpret',label:'存在論へ転回'},
+ {a:'heidegger',b:'beingworld',type:'influence',label:'中心概念'},
+ {a:'heidegger',b:'dasein',type:'influence',label:'存在論的分析'},
+ {a:'heidegger',b:'care',type:'influence',label:'実存論'},
+ {a:'heidegger',b:'merleau',type:'influence',label:'重要な参照先'},
+ {a:'merleau',b:'livedbody',type:'influence',label:'独自に展開'},
+ {a:'merleau',b:'perception',type:'influence',label:'主題の中心'},
+ {a:'merleau',b:'bodyschema',type:'influence',label:'身体論'},
+ {a:'lifeworld',b:'beingworld',type:'resonance',label:'世界への参与'},
+ {a:'livedbody',b:'beingworld',type:'resonance',label:'身体的な世界参与'},
+ {a:'intentionality',b:'perception',type:'resonance',label:'知覚の志向性'},
+ {a:'livedbody',b:'perception',type:'resonance',label:'身体を通した知覚'},
+ {a:'livedbody',b:'bodyschema',type:'resonance',label:'身体の実践的な組織化'},
+ {a:'beingworld',b:'dasein',type:'resonance',label:'存在構造'},
+ {a:'dasein',b:'care',type:'resonance',label:'実存論的な構造'}
+];
+const NS='http://www.w3.org/2000/svg';
+const graph=document.getElementById('graph'),scene=document.getElementById('scene');
+const nodeMap=Object.fromEntries(nodes.map(n=>[n.id,n]));let selected='phenomenology',scale=1,offsetX=0,offsetY=0,isMobile=matchMedia('(max-width:720px)').matches,hasFocusedNode=false,cameraFrame=0;
+function el(name,attrs={}){const e=document.createElementNS(NS,name);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);return e}
+function graphCenter(){return isMobile?{x:270,y:585}:{x:622,y:350}}
+function layoutFor(n){if(isMobile){return{x:n.mx??n.x*.5,y:100+((n.my??n.y*.5)-66)*1.35,w:(n.mw??n.w)*1.08,h:(n.mh??n.h)*1.08}}return{x:622+(n.x-500)*1.30,y:n.y,w:n.w*1.15,h:n.h*1.15}}
+function pos(id){const n=nodeMap[id];const p=layoutFor(n);return{x:p.x,y:p.y,w:p.w,h:p.h}}
+function centerLine(a,b){const p=pos(a),q=pos(b);const dx=q.x-p.x,dy=q.y-p.y;const angle=Math.atan2(dy,dx);const c=Math.abs(Math.cos(angle)),s=Math.abs(Math.sin(angle));const ra=Math.min(c?p.w/2/c:Infinity,s?p.h/2/s:Infinity);const rb=Math.min(c?q.w/2/c:Infinity,s?q.h/2/s:Infinity);return{x1:p.x+Math.cos(angle)*ra*.94,y1:p.y+Math.sin(angle)*ra*.94,x2:q.x-Math.cos(angle)*rb*.94,y2:q.y-Math.sin(angle)*rb*.94}}
+function render(){isMobile=matchMedia('(max-width:720px)').matches;graph.setAttribute('viewBox',isMobile?'0 0 540 1170':'0 0 1244 700');graph.querySelector('rect').setAttribute('width',isMobile?'540':'1244');graph.querySelector('rect').setAttribute('height',isMobile?'1170':'700');
+ // On narrow screens, give the SVG a taller, stacked arrangement so the whole network remains tappable.
+ const sceneChildren=[];scene.replaceChildren();
+ const edgeLayer=el('g',{id:'edge-layer'}),labelLayer=el('g',{id:'label-layer'}),nodeLayer=el('g',{id:'node-layer'});
+ edges.forEach((e,i)=>{const c=centerLine(e.a,e.b);const path=el('path',{d:`M ${c.x1} ${c.y1} L ${c.x2} ${c.y2}`,class:`edge ${e.type}`, 'data-a':e.a,'data-b':e.b,'data-edge':i,...(e.type==='influence'?{'marker-end':'url(#arrow-blue)'}:e.type==='reinterpret'?{'marker-end':'url(#arrow-sand)'}:{})});const title=el('title');title.textContent=`${nodeMap[e.a].title} — ${e.label} — ${nodeMap[e.b].title}`;path.appendChild(title);edgeLayer.appendChild(path);
+ // Only label the key cross-links on desktop to keep the graph legible.
+ const keyLabels=['husserl-heidegger','husserl-merleau','lifeworld-beingworld','livedbody-beingworld','heidegger-merleau'];if(!isMobile&&keyLabels.includes(`${e.a}-${e.b}`)){const lx=(c.x1+c.x2)/2,ly=(c.y1+c.y2)/2-7;const t=el('text',{x:lx,y:ly,class:'edge-label','data-a':e.a,'data-b':e.b});t.textContent=e.label;labelLayer.appendChild(t)}});
+ nodes.forEach(n=>{const p=layoutFor(n),g=el('g',{class:`node ${n.kind}`,tabindex:'0',role:'button','aria-label':`${n.title}を選択`,'aria-pressed':String(n.id===selected),'data-id':n.id,transform:`translate(${p.x-p.w/2} ${p.y-p.h/2})`});const r=el('rect',{x:0,y:0,width:p.w,height:p.h,rx:n.kind==='philosopher'?12:Math.min(p.h/2,9)});g.appendChild(r);if(n.kind==='philosopher'){const d=el('circle',{cx:12,cy:p.h/2,r:4,class:'node-dot'});g.appendChild(d)}const title=el('text',{x:p.w/2+(n.kind==='philosopher'?3:0),y:n.sub?p.h/2-5:p.h/2,class:'node-title'});title.textContent=n.title;g.appendChild(title);if(n.sub){const sub=el('text',{x:p.w/2+(n.kind==='philosopher'?3:0),y:p.h/2+13,class:'node-type'});sub.textContent=n.kind==='philosopher'?n.type.split(' · ')[1]:({system:'思想の流れ',method:'方法',concept:'概念',special:'概念'}[n.kind]||n.type);g.appendChild(sub)}g.addEventListener('click',()=>selectNode(n.id));g.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();selectNode(n.id)}});nodeLayer.appendChild(g)});
+ scene.append(edgeLayer,labelLayer,nodeLayer);applyTransform();applyHighlight()}
+function applyTransform(){const c=graphCenter();const t=`translate(${offsetX} ${offsetY}) translate(${c.x} ${c.y}) scale(${scale}) translate(${-c.x} ${-c.y})`;scene.setAttribute('transform',t)}
+function animateCamera(targetScale,targetX,targetY){if(cameraFrame)cancelAnimationFrame(cameraFrame);const start={scale, x:offsetX, y:offsetY};const end={scale:targetScale,x:targetX,y:targetY};const duration=350;const startTime=performance.now();function step(now){const t=Math.min(1,(now-startTime)/duration);const eased=1-Math.pow(1-t,3);scale=start.scale+(end.scale-start.scale)*eased;offsetX=start.x+(end.x-start.x)*eased;offsetY=start.y+(end.y-start.y)*eased;applyTransform();if(t<1)cameraFrame=requestAnimationFrame(step);else cameraFrame=0}cameraFrame=requestAnimationFrame(step)}
+function focusNode(id,animate=true){const p=pos(id),c=graphCenter();const focusScale=Math.max(scale,1.12);const tx=(c.x-p.x)*focusScale,ty=(c.y-p.y)*focusScale;hasFocusedNode=true;if(animate)animateCamera(focusScale,tx,ty);else{scale=focusScale;offsetX=tx;offsetY=ty;applyTransform()}}
+function applyHighlight(){
+ if(!selected||!nodeMap[selected]){
+  scene.querySelectorAll('.node').forEach(g=>{g.classList.remove('selected','dim');g.setAttribute('aria-pressed','false')});
+  scene.querySelectorAll('.edge').forEach(e=>e.classList.remove('hot','dim'));
+  scene.querySelectorAll('.edge-label').forEach(t=>t.classList.remove('dim'));
+  document.getElementById('graph-status').textContent='ノードを選択すると、周辺のつながりが強調されます';
+  return;
+ }
+ const connected=new Set([selected]);edges.forEach(e=>{if(e.a===selected)connected.add(e.b);if(e.b===selected)connected.add(e.a)});scene.querySelectorAll('.node').forEach(g=>{const id=g.dataset.id;g.classList.toggle('selected',id===selected);g.classList.toggle('dim',!connected.has(id));g.setAttribute('aria-pressed',String(id===selected))});scene.querySelectorAll('.edge').forEach(e=>{const hot=e.dataset.a===selected||e.dataset.b===selected;e.classList.toggle('hot',hot);e.classList.toggle('dim',!hot)});scene.querySelectorAll('.edge-label').forEach(t=>t.classList.toggle('dim',t.dataset.a!==selected&&t.dataset.b!==selected));document.getElementById('graph-status').textContent=`選択中：${nodeMap[selected].title} · 直接つながるノード ${connected.size-1} 個`
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function selectNode(id,options={}){if(!nodeMap[id])return;selected=id;applyHighlight();const n=nodeMap[id];if(options.center!==false)focusNode(id,true);const card=document.getElementById('detail-card');card.classList.remove('hidden','expanded');card.classList.add('compact');document.getElementById('detail-expand').textContent='拡大 ↗';document.getElementById('detail-expand').setAttribute('aria-label','解説を全画面で開く');document.getElementById('detail-title').textContent=n.title;document.getElementById('detail-type').textContent=n.type;document.getElementById('detail-subtitle').textContent=n.sub;document.getElementById('detail-dot').style.background=n.kind==='philosopher'?'#8797a3':n.kind==='method'?'#94a792':n.kind==='system'?'#b6a487':'#bb958b';const body=document.getElementById('detail-body');body.replaceChildren();const lead=document.createElement('p');lead.className='detail-lead';lead.textContent=n.lead;body.appendChild(lead);
+ const bsec=document.createElement('section');bsec.className='detail-section';bsec.innerHTML='<h3>詳しい解説</h3>';n.body.forEach(txt=>{const p=document.createElement('p');p.textContent=txt;bsec.appendChild(p)});body.appendChild(bsec);
+ const why=document.createElement('section');why.className='detail-section';why.innerHTML='<h3>このノードの位置づけ</h3>';const wp=document.createElement('p');wp.textContent=n.why;why.appendChild(wp);body.appendChild(why);
+ const related=edges.filter(e=>e.a===id||e.b===id).map(e=>{const other=nodeMap[e.a===id?e.b:e.a];return{other,e}});const rel=document.createElement('section');rel.className='detail-section';rel.innerHTML='<h3>つながるノード</h3>';const list=document.createElement('div');list.className='relation-list';related.forEach(({other,e})=>{const btn=document.createElement('button');btn.type='button';btn.className='relation-btn';btn.innerHTML=`<span><strong>${esc(other.title)}</strong><small>${esc(e.label)} · ${e.type==='influence'?'影響・継承':e.type==='reinterpret'?'批判・方向転換':'概念的な共鳴'}</small></span><span class="relation-arrow">↗</span>`;btn.addEventListener('click',()=>selectNode(other.id));list.appendChild(btn)});rel.appendChild(list);body.appendChild(rel);
+ const peers=document.createElement('section');peers.className='detail-section';peers.innerHTML='<h3>関連する入口</h3>';const tags=document.createElement('div');tags.className='tags';n.related.filter(x=>x!==id).slice(0,8).forEach(rid=>{const peer=nodeMap[rid];if(!peer)return;const btn=document.createElement('button');btn.type='button';btn.className='tag-btn';btn.textContent=peer.title;btn.addEventListener('click',()=>selectNode(rid));tags.appendChild(btn)});peers.appendChild(tags);body.appendChild(peers);
+ const note=document.createElement('div');note.className='inline-note';note.textContent='この試作では、線は「影響・継承」「批判・方向転換」「概念的な共鳴」を区別しています。線があることは、二つの概念が同じ意味だということではありません。';body.appendChild(note);
+}
+document.getElementById('search').addEventListener('input',ev=>{const q=ev.target.value.trim().toLocaleLowerCase();scene.querySelectorAll('.node').forEach(g=>{const n=nodeMap[g.dataset.id];const hit=!q||`${n.title} ${n.type} ${n.sub} ${n.lead}`.toLocaleLowerCase().includes(q);g.classList.toggle('search-hit',!!q&&hit);g.classList.toggle('dim',!!q&&!hit);});if(q){const first=nodes.find(n=>`${n.title} ${n.type} ${n.sub} ${n.lead}`.toLocaleLowerCase().includes(q));document.getElementById('graph-status').textContent=first?`検索候補：${first.title}（ノードをタップ）`:'一致するノードがありません'}else applyHighlight()});
+document.getElementById('zoom-in').addEventListener('click',()=>{const next=Math.min(1.8,scale+.12);if(hasFocusedNode&&selected){const p=pos(selected),c=graphCenter();animateCamera(next,(c.x-p.x)*next,(c.y-p.y)*next)}else animateCamera(next,offsetX,offsetY)});document.getElementById('zoom-out').addEventListener('click',()=>{const next=Math.max(.55,scale-.12);if(hasFocusedNode&&selected){const p=pos(selected),c=graphCenter();animateCamera(next,(c.x-p.x)*next,(c.y-p.y)*next)}else animateCamera(next,offsetX,offsetY)});
+function resetView({clearSearch=false}={}){
+ if(cameraFrame){cancelAnimationFrame(cameraFrame);cameraFrame=0;}
+ selected=null;hasFocusedNode=false;
+ const card=document.getElementById('detail-card');card.classList.add('hidden');card.classList.remove('expanded','compact');
+ if(clearSearch){document.getElementById('search').value='';scene.querySelectorAll('.node').forEach(g=>g.classList.remove('search-hit'));}
+ applyHighlight();animateCamera(1,0,isMobile?200:0);
+}
+document.getElementById('zoom-reset').addEventListener('click',()=>resetView({clearSearch:true}));
+document.getElementById('detail-expand').addEventListener('click',()=>{const card=document.getElementById('detail-card');const expanded=card.classList.toggle('expanded');card.classList.toggle('compact',!expanded);document.getElementById('detail-expand').textContent=expanded?'縮小 ↙':'拡大 ↗';document.getElementById('detail-expand').setAttribute('aria-label',expanded?'解説をコンパクト表示に戻す':'解説を全画面で開く');if(expanded)document.getElementById('detail-body').scrollTop=0;});
+document.getElementById('detail-close').addEventListener('click',()=>resetView());
+// Drag the open canvas to pan. Tapping a node remains a separate action.
+const stage=document.getElementById('graph-stage');let pan=null;stage.addEventListener('pointerdown',ev=>{if(ev.target.closest&&ev.target.closest('.node'))return;if(ev.pointerType==='mouse'&&ev.button!==0)return;const vb=graph.viewBox.baseVal;const baseScale=Math.min(graph.clientWidth/vb.width,graph.clientHeight/vb.height);pan={id:ev.pointerId,x:ev.clientX,y:ev.clientY,startX:offsetX,startY:offsetY,baseScale,moved:false};stage.setPointerCapture(ev.pointerId)});stage.addEventListener('pointermove',ev=>{if(!pan||pan.id!==ev.pointerId)return;const dx=ev.clientX-pan.x,dy=ev.clientY-pan.y;if(Math.hypot(dx,dy)>7)pan.moved=true;offsetX=pan.startX+dx/pan.baseScale;offsetY=pan.startY+dy/pan.baseScale;hasFocusedNode=false;applyTransform()});function endPan(ev){if(!pan||pan.id!==ev.pointerId)return;const wasTap=!pan.moved;pan=null;if(wasTap)resetView();}stage.addEventListener('pointerup',endPan);stage.addEventListener('pointercancel',endPan);window.addEventListener('resize',()=>{const wasMobile=isMobile;const nowMobile=matchMedia('(max-width:720px)').matches;if(wasMobile!==nowMobile){scale=1;offsetX=0;offsetY=nowMobile?200:0;hasFocusedNode=false;render();if(selected)selectNode(selected,{center:false});else applyHighlight()}});
+if(isMobile)offsetY=200;render();selectNode('phenomenology',{center:false});
+</script>
+</body>
+</html>
